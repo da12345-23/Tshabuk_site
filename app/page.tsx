@@ -22,18 +22,15 @@ export default function Home() {
   const [name, setName] = useState("");
   const [elapsedMs, setElapsedMs] = useState(0);
   const [savingImage, setSavingImage] = useState(false);
-  const [customMessage, setCustomMessage] = useState<string | null>(null);
   const [prefilledName, setPrefilledName] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // A personalized invite link can carry ?msg=<custom message> and an
-  // optional ?name=<guest name> to prefill the name field -- e.g.
-  // https://tshabuk.site/?name=Sara&msg=You%20mean%20the%20world%20to%20us
+  // A personalized invite link can carry ?name=<guest name> to prefill the
+  // name field -- e.g. https://tshabuk.site/?name=Sara -- the guest still
+  // has to play and solve the puzzle before the invite shows up.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const msg = params.get("msg");
     const presetName = params.get("name");
-    if (msg) setCustomMessage(msg);
     if (presetName) setPrefilledName(presetName);
   }, []);
 
@@ -43,15 +40,10 @@ export default function Home() {
     try {
       const saved = window.localStorage.getItem("tashabuk-invite");
       if (saved) {
-        const parsed = JSON.parse(saved) as {
-          name: string;
-          elapsedMs: number;
-          customMessage?: string | null;
-        };
+        const parsed = JSON.parse(saved) as { name: string; elapsedMs: number };
         if (parsed?.name) {
           setName(parsed.name);
           setElapsedMs(parsed.elapsedMs ?? 0);
-          if (parsed.customMessage) setCustomMessage(parsed.customMessage);
           setStage("reveal");
         }
       }
@@ -82,10 +74,7 @@ export default function Home() {
     setElapsedMs(elapsed);
     setStage("reveal");
     try {
-      window.localStorage.setItem(
-        "tashabuk-invite",
-        JSON.stringify({ name, elapsedMs: elapsed, customMessage })
-      );
+      window.localStorage.setItem("tashabuk-invite", JSON.stringify({ name, elapsedMs: elapsed }));
     } catch {
       // ignore
     }
@@ -151,14 +140,14 @@ export default function Home() {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center gap-6"
             >
-              <InviteCard name={name} elapsedMs={elapsedMs} customMessage={customMessage} />
+              <InviteCard name={name} elapsedMs={elapsedMs} />
 
               {/* Off-screen framed copy, used only as the "Save as image"
                   export target -- the border never shows on the page itself. */}
               <div style={{ position: "fixed", top: 0, left: -99999, pointerEvents: "none" }} aria-hidden>
                 <InviteFrame ref={cardRef}>
                   <div style={{ padding: "22px 14px" }}>
-                    <InviteCard name={name} elapsedMs={elapsedMs} customMessage={customMessage} />
+                    <InviteCard name={name} elapsedMs={elapsedMs} />
                   </div>
                 </InviteFrame>
               </div>

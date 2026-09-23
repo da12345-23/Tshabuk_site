@@ -5,7 +5,6 @@ import { Button } from "@/components/Button";
 
 export default function MakeInvitePage() {
   const [name, setName] = useState("");
-  const [msg, setMsg] = useState("");
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("");
 
@@ -20,7 +19,6 @@ export default function MakeInvitePage() {
     if (!origin) return "";
     const url = new URL(origin);
     if (name.trim()) url.searchParams.set("name", name.trim());
-    if (msg.trim()) url.searchParams.set("msg", msg.trim());
     return url.toString();
   })();
 
@@ -42,7 +40,7 @@ export default function MakeInvitePage() {
             إنشاء دعوة مخصصة
           </h1>
           <p className="font-body text-sm text-[var(--color-text-muted)] mt-1">
-            اكتب اسم الضيف ورسالة خاصة، وانسخ الرابط لإرساله
+            اكتب اسم الضيف وانسخ الرابط لإرساله
           </p>
         </div>
 
@@ -55,19 +53,6 @@ export default function MakeInvitePage() {
             onChange={(e) => setName(e.target.value)}
             placeholder="مثال: سارة"
             className="w-full rounded-xl bg-[var(--color-cream-50)] border-2 border-[var(--color-border)]/40 focus:border-[var(--color-primary)] outline-none px-4 py-2.5 font-body text-sm text-[var(--color-text)]"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="font-body text-xs font-semibold text-[var(--color-text-muted)]">
-            رسالة خاصة (اختياري)
-          </label>
-          <textarea
-            value={msg}
-            onChange={(e) => setMsg(e.target.value)}
-            placeholder="مثال: أنتِ الأقرب لقلبنا، نتشرف بحضورك"
-            rows={3}
-            className="w-full rounded-xl bg-[var(--color-cream-50)] border-2 border-[var(--color-border)]/40 focus:border-[var(--color-primary)] outline-none px-4 py-2.5 font-body text-sm text-[var(--color-text)] resize-none"
           />
         </div>
 

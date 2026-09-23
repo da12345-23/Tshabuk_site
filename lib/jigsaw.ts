@@ -189,6 +189,45 @@ export function frameRingPath(
   return { outer, inner, accents };
 }
 
+export type BorderPiece = { path: string; offsetX: number; offsetY: number };
+export type BorderFrame = {
+  pieces: BorderPiece[];
+  corners: { x: number; y: number; size: number }[];
+};
+
+/**
+ * A picture-frame border made of many small, evenly-sized puzzle-piece
+ * tiles lining each edge -- a literal row of interlocking pieces (tab into
+ * blank, tab into blank) reusing the exact same generator as the real play
+ * grid, just applied to four thin 1xN strips instead of one big grid, with
+ * a plain square tile at each corner where the strips meet.
+ */
+export function borderFrameLayout(width: number, height: number, thickness: number, seed = 5): BorderFrame {
+  const nTop = Math.max(3, Math.round(width / thickness));
+  const nSide = Math.max(3, Math.round(height / thickness));
+
+  const top = generateJigsawLayout(width, thickness, 1, nTop, seed + 1);
+  const bottom = generateJigsawLayout(width, thickness, 1, nTop, seed + 2);
+  const left = generateJigsawLayout(thickness, height, nSide, 1, seed + 3);
+  const right = generateJigsawLayout(thickness, height, nSide, 1, seed + 4);
+
+  const pieces: BorderPiece[] = [
+    ...top.pieces.map((p) => ({ path: p.path, offsetX: 0, offsetY: -thickness })),
+    ...bottom.pieces.map((p) => ({ path: p.path, offsetX: 0, offsetY: height })),
+    ...left.pieces.map((p) => ({ path: p.path, offsetX: -thickness, offsetY: 0 })),
+    ...right.pieces.map((p) => ({ path: p.path, offsetX: width, offsetY: 0 })),
+  ];
+
+  const corners = [
+    { x: -thickness, y: -thickness, size: thickness },
+    { x: width, y: -thickness, size: thickness },
+    { x: width, y: height, size: thickness },
+    { x: -thickness, y: height, size: thickness },
+  ];
+
+  return { pieces, corners };
+}
+
 export function generateJigsawLayout(
   boardWidth: number,
   boardHeight: number,
