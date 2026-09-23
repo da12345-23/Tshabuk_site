@@ -60,11 +60,15 @@ export function PuzzlePiece({
         zIndex: dragging ? 999 : zIndex,
         touchAction: "none",
         cursor: piece.locked ? "default" : dragging ? "grabbing" : "grab",
+        // Kept light (small blur radius) even while dragging -- a big blurred
+        // drop-shadow recomputed every pointer-move frame is what made
+        // dragging feel laggy, especially on phones.
         filter: piece.locked
           ? "none"
           : dragging
-          ? "drop-shadow(0 14px 18px rgba(43,35,32,0.35))"
-          : "drop-shadow(0 4px 6px rgba(43,35,32,0.25))",
+          ? "drop-shadow(0 5px 6px rgba(43,35,32,0.32))"
+          : "drop-shadow(0 3px 4px rgba(43,35,32,0.22))",
+        willChange: dragging ? "transform" : undefined,
       }}
       initial={{ rotate: piece.rotation, scale: trayScale }}
       animate={
@@ -86,7 +90,7 @@ export function PuzzlePiece({
         const newX = piece.home.x + info.offset.x;
         const newY = piece.home.y + info.offset.y;
         const dist = Math.hypot(newX - piece.target.x, newY - piece.target.y);
-        const snapped = dist < 24;
+        const snapped = dist < 34;
         x.set(0);
         y.set(0);
         onSettle(piece.id, { x: newX, y: newY }, snapped);

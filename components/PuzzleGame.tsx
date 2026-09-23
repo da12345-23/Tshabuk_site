@@ -14,8 +14,9 @@ const GAP = 10;
 const SEED = 7;
 const IMAGE_SRC = "/images/puzzle-source.png";
 const PIECE_COUNT = ROWS * COLS;
-const MIN_TRAY_SCALE = 0.5;
+const MIN_TRAY_SCALE = 0.65;
 const MAX_TRAY_SCALE = 0.85;
+const MAX_TRAY_ROWS = 6;
 
 function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
@@ -50,8 +51,8 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   }, []);
 
   const boardWidth = availableWidth
-    ? Math.max(240, Math.min(360, availableWidth - 24))
-    : 300;
+    ? Math.max(220, Math.min(300, availableWidth - 24))
+    : 260;
   // puzzle-source.png is a square composite, so the board stays square too.
   const boardHeight = boardWidth;
 
@@ -69,10 +70,10 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     // and letting the row count (and scroll) fall out wherever.
     let trayCols = PIECE_COUNT;
     let trayScale = MIN_TRAY_SCALE;
-    for (let rows = 2; rows <= 5; rows++) {
+    for (let rows = 2; rows <= MAX_TRAY_ROWS; rows++) {
       const cols = Math.ceil(PIECE_COUNT / rows);
       const scale = (effectiveWidth / cols - GAP) / bboxW;
-      if (scale >= MIN_TRAY_SCALE || rows === 5) {
+      if (scale >= MIN_TRAY_SCALE || rows === MAX_TRAY_ROWS) {
         trayCols = cols;
         trayScale = Math.max(MIN_TRAY_SCALE, Math.min(MAX_TRAY_SCALE, scale));
         break;
