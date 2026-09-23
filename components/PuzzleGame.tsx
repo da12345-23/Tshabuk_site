@@ -50,7 +50,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   }, []);
 
   const boardWidth = availableWidth
-    ? Math.max(240, Math.min(480, availableWidth - 24))
+    ? Math.max(240, Math.min(360, availableWidth - 24))
     : 300;
   // puzzle-source.png is a square composite, so the board stays square too.
   const boardHeight = boardWidth;
@@ -192,7 +192,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   const lockedCount = pieces.filter((p) => p.locked).length;
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full max-w-[1500px] mx-auto">
+    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full max-w-[720px] mx-auto">
       <div className="flex items-center gap-6 rounded-full bg-[var(--color-surface-raised)] px-6 py-2.5 shadow-sm border border-[var(--color-border)]/40 font-display text-[var(--color-text)]">
         <div className="flex items-baseline gap-1.5">
           <span className="text-xs text-[var(--color-text-muted)]">{t.puzzle.timer}</span>
