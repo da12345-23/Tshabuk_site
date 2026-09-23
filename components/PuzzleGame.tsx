@@ -47,13 +47,13 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   }, []);
 
   const boardWidth = availableWidth
-    ? Math.max(220, Math.min(320, availableWidth - 8))
+    ? Math.max(220, Math.min(420, availableWidth - 24))
     : 280;
   // puzzle-source.png is a square composite, so the board stays square too.
   const boardHeight = boardWidth;
-  const trayCols = availableWidth && availableWidth < 380 ? 2 : 3;
 
   const geometry = useMemo(() => {
+    const effectiveWidth = availableWidth ?? boardWidth;
     const pw = boardWidth / COLS;
     const ph = boardHeight / ROWS;
     const tabDepth = TAB_FRACTION * Math.min(pw, ph);
@@ -61,6 +61,9 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     const bboxH = ph + tabDepth * 2;
     const trayCellW = bboxW + GAP;
     const trayCellH = bboxH + GAP;
+    // Fit as many piece columns as the available width allows, so wide
+    // screens spread the tray sideways instead of forcing a tall scroll.
+    const trayCols = Math.max(2, Math.min(ROWS * COLS, Math.floor(effectiveWidth / trayCellW)));
     const trayRows = Math.ceil((ROWS * COLS) / trayCols);
     const trayWidth = trayCols * trayCellW;
     const trayHeight = trayRows * trayCellH;
@@ -73,13 +76,14 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
       bboxH,
       trayCellW,
       trayCellH,
+      trayCols,
       trayRows,
       stageWidth,
       stageHeight,
       boardOffsetX,
       trayOffsetY,
     };
-  }, [boardWidth, boardHeight, trayCols]);
+  }, [boardWidth, boardHeight, availableWidth]);
 
   // Build the puzzle once we know the real available width.
   useEffect(() => {
@@ -102,8 +106,8 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
       const runtime: PieceRuntime[] = layout.pieces.map((p) => {
         const id = `${p.row}-${p.col}`;
         const slotIndex = order.indexOf(id);
-        const col = slotIndex % trayCols;
-        const row = Math.floor(slotIndex / trayCols);
+        const col = slotIndex % geometry.trayCols;
+        const row = Math.floor(slotIndex / geometry.trayCols);
         const jitterX = (Math.random() - 0.5) * 8;
         const jitterY = (Math.random() - 0.5) * 8;
         const home = {
@@ -185,7 +189,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   const lockedCount = pieces.filter((p) => p.locked).length;
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full">
+    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full max-w-[1240px] mx-auto">
       <div className="flex items-center gap-6 rounded-full bg-[var(--color-surface-raised)] px-6 py-2.5 shadow-sm border border-[var(--color-border)]/40 font-display text-[var(--color-text)]">
         <div className="flex items-baseline gap-1.5">
           <span className="text-xs text-[var(--color-text-muted)]">{t.puzzle.timer}</span>
