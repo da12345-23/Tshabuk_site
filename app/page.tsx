@@ -23,6 +23,7 @@ export default function Home() {
   const [elapsedMs, setElapsedMs] = useState(0);
   const [savingImage, setSavingImage] = useState(false);
   const [frameReady, setFrameReady] = useState(false);
+  const [rankReady, setRankReady] = useState(false);
   const [prefilledName, setPrefilledName] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +57,8 @@ export default function Home() {
           setName(parsed.name);
           setElapsedMs(parsed.elapsedMs ?? 0);
           setStage("reveal");
+          setFrameReady(false);
+          setRankReady(false);
         }
       }
     } catch {
@@ -64,7 +67,7 @@ export default function Home() {
   }, []);
 
   async function handleSaveImage() {
-    if (!cardRef.current || savingImage || !frameReady) return;
+    if (!cardRef.current || savingImage || !frameReady || !rankReady) return;
     setSavingImage(true);
     try {
       const { toPng } = await import("html-to-image");
@@ -84,6 +87,8 @@ export default function Home() {
     celebrate();
     setElapsedMs(elapsed);
     setStage("reveal");
+    setFrameReady(false);
+    setRankReady(false);
     try {
       window.sessionStorage.setItem("tashabuk-invite", JSON.stringify({ name, elapsedMs: elapsed }));
     } catch {
@@ -155,15 +160,18 @@ export default function Home() {
 
               {/* Hidden (not off-screen -- Next/Image lazy-loading needs it
                   in-viewport) framed copy, used only as the "Save as image"
-                  export target. The border never shows on the page itself. */}
+                  export target. This decorated background never shows on
+                  the page itself, only in the saved photo. */}
               <div
                 style={{ position: "absolute", top: 0, left: 0, opacity: 0, pointerEvents: "none", zIndex: -1 }}
                 aria-hidden
               >
                 <InviteFrame ref={cardRef} onReady={() => setFrameReady(true)}>
-                  <div style={{ padding: "22px 14px" }}>
-                    <InviteCard name={name} elapsedMs={elapsedMs} />
-                  </div>
+                  <InviteCard
+                    name={name}
+                    elapsedMs={elapsedMs}
+                    onRankSettled={() => setRankReady(true)}
+                  />
                 </InviteFrame>
               </div>
 

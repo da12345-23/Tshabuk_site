@@ -29,8 +29,10 @@ function CalendarIcon() {
   );
 }
 
-export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: number }>(
-  function InviteCard({ name, elapsedMs }, ref) {
+export const InviteCard = forwardRef<
+  HTMLDivElement,
+  { name: string; elapsedMs: number; onRankSettled?: () => void }
+>(function InviteCard({ name, elapsedMs, onRankSettled }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
@@ -43,15 +45,20 @@ export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: 
         } catch {
           // ignore
         }
-        if (!mine) return;
+        if (!mine) {
+          onRankSettled?.();
+          return;
+        }
         const entries = await fetchLeaderboard();
         const index = entries.findIndex((e) => e.id === mine);
         if (!cancelled && index >= 0) setRank(index + 1);
+        onRankSettled?.();
       }
       loadRank();
       return () => {
         cancelled = true;
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
