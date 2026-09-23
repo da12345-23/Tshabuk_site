@@ -10,9 +10,12 @@ import { useLocale } from "@/lib/locale-context";
 const ROWS = 3;
 const COLS = 3;
 const TAB_FRACTION = 0.3;
-const GAP = 14;
+const GAP = 12;
 const SEED = 7;
 const IMAGE_SRC = "/images/puzzle-source.png";
+// Pieces render smaller while still in the tray (compact, no scrolling)
+// and grow to true size only once snapped onto the board.
+const TRAY_SCALE = 0.58;
 
 function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
@@ -47,8 +50,8 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   }, []);
 
   const boardWidth = availableWidth
-    ? Math.max(220, Math.min(420, availableWidth - 24))
-    : 280;
+    ? Math.max(240, Math.min(480, availableWidth - 24))
+    : 300;
   // puzzle-source.png is a square composite, so the board stays square too.
   const boardHeight = boardWidth;
 
@@ -59,8 +62,8 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     const tabDepth = TAB_FRACTION * Math.min(pw, ph);
     const bboxW = pw + tabDepth * 2;
     const bboxH = ph + tabDepth * 2;
-    const trayCellW = bboxW + GAP;
-    const trayCellH = bboxH + GAP;
+    const trayCellW = bboxW * TRAY_SCALE + GAP;
+    const trayCellH = bboxH * TRAY_SCALE + GAP;
     // Fit as many piece columns as the available width allows, so wide
     // screens spread the tray sideways instead of forcing a tall scroll.
     const trayCols = Math.max(2, Math.min(ROWS * COLS, Math.floor(effectiveWidth / trayCellW)));
@@ -189,7 +192,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   const lockedCount = pieces.filter((p) => p.locked).length;
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full max-w-[1240px] mx-auto">
+    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full max-w-[1500px] mx-auto">
       <div className="flex items-center gap-6 rounded-full bg-[var(--color-surface-raised)] px-6 py-2.5 shadow-sm border border-[var(--color-border)]/40 font-display text-[var(--color-text)]">
         <div className="flex items-baseline gap-1.5">
           <span className="text-xs text-[var(--color-text-muted)]">{t.puzzle.timer}</span>
@@ -248,6 +251,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
               bringToFront={bringToFront}
               onSettle={handleSettle}
               onLockBurst={handleLockBurst}
+              trayScale={TRAY_SCALE}
             />
           ))}
 

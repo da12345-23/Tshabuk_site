@@ -20,12 +20,17 @@ export function PuzzlePiece({
   bringToFront,
   zIndex,
   onLockBurst,
+  trayScale = 1,
 }: {
   piece: PieceRuntime;
   onSettle: (id: string, pos: { x: number; y: number }, snapped: boolean) => void;
   bringToFront: (id: string) => void;
   zIndex: number;
   onLockBurst: (id: string, x: number, y: number) => void;
+  /** Visual scale for pieces still in the tray, so the board can be big
+   * while the tray stays compact -- the piece's real width/height (used
+   * for drag/snap math) is unchanged, only its rendered size shrinks. */
+  trayScale?: number;
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -55,19 +60,19 @@ export function PuzzlePiece({
           ? "drop-shadow(0 14px 18px rgba(43,35,32,0.35))"
           : "drop-shadow(0 4px 6px rgba(43,35,32,0.25))",
       }}
-      initial={{ rotate: piece.rotation, scale: 1 }}
+      initial={{ rotate: piece.rotation, scale: trayScale }}
       animate={
         piece.locked
-          ? { rotate: 0, scale: [1, 1.16, 1] }
-          : { rotate: piece.rotation }
+          ? { rotate: 0, scale: [trayScale, 1.16, 1] }
+          : { rotate: piece.rotation, scale: trayScale }
       }
       transition={
         piece.locked
           ? { duration: 0.42, ease: [0.34, 1.56, 0.64, 1] }
           : { type: "spring", stiffness: 300, damping: 22 }
       }
-      whileHover={piece.locked ? undefined : { scale: 1.04 }}
-      whileDrag={{ scale: 1.08 }}
+      whileHover={piece.locked ? undefined : { scale: trayScale * 1.08 }}
+      whileDrag={{ scale: trayScale * 1.18 }}
       onPointerDown={() => bringToFront(piece.id)}
       onDragStart={() => setDragging(true)}
       onDragEnd={(_, info) => {
