@@ -121,6 +121,74 @@ export function singlePiecePath(
   return d;
 }
 
+/**
+ * A coherent puzzle-edge picture frame: an outer rectangle whose four sides
+ * bulge in and out with real jigsaw tabs (reusing the same bump geometry as
+ * the play pieces), wrapped around a plain inner rectangle "window". Drawn
+ * as one continuous path per boundary with fill-rule="evenodd", so corners
+ * always meet cleanly -- unlike tiling a linear strip image around a box.
+ */
+export type FrameAccent = { x: number; y: number; colorIndex: number };
+
+export function frameRingPath(
+  width: number,
+  height: number,
+  thickness: number,
+  bumpsPerSide: number,
+  seed = 3
+): { outer: string; inner: string; accents: FrameAccent[] } {
+  const rand = seededRandom(seed);
+  const ox0 = -thickness;
+  const oy0 = -thickness;
+  const ox1 = width + thickness;
+  const oy1 = height + thickness;
+  const accents: FrameAccent[] = [];
+  let colorCursor = 0;
+
+  function side(x0: number, y0: number, x1: number, y1: number): string {
+    const dx = (x1 - x0) / bumpsPerSide;
+    const dy = (y1 - y0) / bumpsPerSide;
+    const len = Math.hypot(dx, dy);
+    const dirX = dx / len;
+    const dirY = dy / len;
+    // Perpendicular to the segment direction -- matches the world-space
+    // direction placeEdge's local "+y" (the bump direction) maps to.
+    const perpX = -dirY;
+    const perpY = dirX;
+    let d = "";
+    for (let i = 0; i < bumpsPerSide; i++) {
+      const sx0 = x0 + dx * i;
+      const sy0 = y0 + dy * i;
+      const sx1 = x0 + dx * (i + 1);
+      const sy1 = y0 + dy * (i + 1);
+      const jitter = rand();
+      const sign: EdgeSign = i % 2 === 0 ? 1 : -1;
+      d += placeEdge(sx0, sy0, sx1, sy1, sign, jitter) + " ";
+
+      const bumpPeak = len * (0.16 + jitter * 0.03) * 2.6;
+      const midX = (sx0 + sx1) / 2;
+      const midY = (sy0 + sy1) / 2;
+      accents.push({
+        x: midX + perpX * bumpPeak * sign,
+        y: midY + perpY * bumpPeak * sign,
+        colorIndex: colorCursor++,
+      });
+    }
+    return d;
+  }
+
+  let outer = `M ${ox0} ${oy0} `;
+  outer += side(ox0, oy0, ox1, oy0); // top
+  outer += side(ox1, oy0, ox1, oy1); // right
+  outer += side(ox1, oy1, ox0, oy1); // bottom
+  outer += side(ox0, oy1, ox0, oy0); // left
+  outer += "Z";
+
+  const inner = `M 0 0 L ${width} 0 L ${width} ${height} L 0 ${height} Z`;
+
+  return { outer, inner, accents };
+}
+
 export function generateJigsawLayout(
   boardWidth: number,
   boardHeight: number,

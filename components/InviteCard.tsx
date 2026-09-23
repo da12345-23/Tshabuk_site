@@ -119,8 +119,13 @@ export const InviteCard = forwardRef<
           </h2>
 
           <p className="font-body text-[13px] leading-relaxed text-[var(--color-text-muted)] mt-3">
-            {customMessage || t.invite.body}
+            {t.invite.body}
           </p>
+          {customMessage && (
+            <p className="font-body text-[13px] leading-relaxed font-semibold text-[var(--color-secondary)] mt-2">
+              {customMessage}
+            </p>
+          )}
 
           {elapsedMs > 0 && (
             <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">

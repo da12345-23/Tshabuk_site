@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { NameEntry } from "@/components/NameEntry";
 import { PuzzleGame } from "@/components/PuzzleGame";
 import { InviteCard } from "@/components/InviteCard";
+import { InviteFrame } from "@/components/InviteFrame";
 import { Button } from "@/components/Button";
 import { LangToggle } from "@/components/LangToggle";
 import { FloatingPieces } from "@/components/FloatingPieces";
@@ -154,45 +155,12 @@ export default function Home() {
 
               {/* Off-screen framed copy, used only as the "Save as image"
                   export target -- the border never shows on the page itself. */}
-              <div
-                data-export-frame
-                style={{ position: "fixed", top: 0, left: -99999, pointerEvents: "none" }}
-                aria-hidden
-              >
-                <div
-                  ref={cardRef}
-                  className="relative"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 12% 15%, color-mix(in srgb, var(--color-sage-500) 16%, var(--color-cream-100)), var(--color-cream-100) 45%), radial-gradient(circle at 88% 85%, color-mix(in srgb, var(--color-mustard-400) 18%, var(--color-cream-100)), var(--color-cream-100) 45%)",
-                    paddingTop: "26px",
-                    paddingBottom: "26px",
-                    paddingLeft: "14px",
-                    paddingRight: "14px",
-                  }}
-                >
-                  <div
-                    className="w-full h-[22px]"
-                    style={{
-                      backgroundImage: "url(/images/brand/piece-border.png)",
-                      backgroundRepeat: "repeat-x",
-                      backgroundSize: "auto 100%",
-                      backgroundPosition: "left center",
-                    }}
-                  />
-                  <div style={{ padding: "18px 8px" }}>
+              <div style={{ position: "fixed", top: 0, left: -99999, pointerEvents: "none" }} aria-hidden>
+                <InviteFrame ref={cardRef}>
+                  <div style={{ padding: "22px 14px" }}>
                     <InviteCard name={name} elapsedMs={elapsedMs} customMessage={customMessage} />
                   </div>
-                  <div
-                    className="w-full h-[22px]"
-                    style={{
-                      backgroundImage: "url(/images/brand/piece-border.png)",
-                      backgroundRepeat: "repeat-x",
-                      backgroundSize: "auto 100%",
-                      backgroundPosition: "left center",
-                    }}
-                  />
-                </div>
+                </InviteFrame>
               </div>
 
               <div className="flex items-center gap-3 flex-wrap justify-center">
