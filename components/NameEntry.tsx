@@ -16,6 +16,10 @@ export function NameEntry({
   const { t } = useLocale();
   const [name, setName] = useState(initialName);
   const [shake, setShake] = useState(0);
+  // A name that arrived via a personalized link (?name=...) is locked --
+  // the guest can't edit it, since it's meant to be exactly what the
+  // organizer set for that specific invite.
+  const locked = Boolean(initialName);
 
   // initialName arrives a tick after mount (read from the URL in the
   // parent, client-side only, to avoid an SSR/client markup mismatch).
@@ -66,10 +70,15 @@ export function NameEntry({
         >
           <input
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => !locked && setName(e.target.value)}
+            readOnly={locked}
             placeholder={t.landing.namePlaceholder}
             aria-label={t.landing.nameLabel}
-            className="w-full rounded-2xl bg-[var(--color-surface-raised)] border-2 border-[var(--color-border)]/40 focus:border-[var(--color-primary)] outline-none px-5 py-3.5 text-center font-body text-base text-[var(--color-text)] shadow-sm transition-colors duration-200 placeholder:text-[var(--color-text-muted)]/70"
+            className={`w-full rounded-2xl border-2 outline-none px-5 py-3.5 text-center font-body text-base shadow-sm transition-colors duration-200 placeholder:text-[var(--color-text-muted)]/70 ${
+              locked
+                ? "bg-[var(--color-cream-100)] border-[var(--color-primary)]/40 text-[var(--color-text)] cursor-default"
+                : "bg-[var(--color-surface-raised)] border-[var(--color-border)]/40 focus:border-[var(--color-primary)] text-[var(--color-text)]"
+            }`}
           />
         </motion.div>
 
