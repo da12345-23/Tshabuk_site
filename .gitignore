@@ -41,6 +41,7 @@ yarn-error.log*
 /Screenshot *.png
 /WhatsApp Image*.jpeg
 /_Invitation*.png
+/BORDER.png
 
 # typescript
 *.tsbuildinfo

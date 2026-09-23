@@ -150,28 +150,51 @@ export default function Home() {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center gap-6"
             >
+              <InviteCard name={name} elapsedMs={elapsedMs} customMessage={customMessage} />
+
+              {/* Off-screen framed copy, used only as the "Save as image"
+                  export target -- the border never shows on the page itself. */}
               <div
-                ref={cardRef}
-                className="relative rounded-[36px]"
-                style={{
-                  background:
-                    "radial-gradient(circle at 12% 15%, color-mix(in srgb, var(--color-sage-500) 16%, var(--color-cream-100)), var(--color-cream-100) 45%), radial-gradient(circle at 88% 85%, color-mix(in srgb, var(--color-mustard-400) 18%, var(--color-cream-100)), var(--color-cream-100) 45%)",
-                  border: "3px dashed var(--color-wood-500)",
-                  padding: "44px 30px",
-                }}
+                data-export-frame
+                style={{ position: "fixed", top: 0, left: -99999, pointerEvents: "none" }}
+                aria-hidden
               >
-                <img
-                  src="/images/brand/piece-green-t.png"
-                  alt=""
-                  className="absolute top-3 left-3 w-9 h-auto -rotate-12 opacity-90 pointer-events-none select-none"
-                />
-                <img
-                  src="/images/brand/piece-mustard-t.png"
-                  alt=""
-                  className="absolute bottom-3 right-3 w-9 h-auto rotate-12 opacity-90 pointer-events-none select-none"
-                />
-                <InviteCard name={name} elapsedMs={elapsedMs} customMessage={customMessage} />
+                <div
+                  ref={cardRef}
+                  className="relative"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 12% 15%, color-mix(in srgb, var(--color-sage-500) 16%, var(--color-cream-100)), var(--color-cream-100) 45%), radial-gradient(circle at 88% 85%, color-mix(in srgb, var(--color-mustard-400) 18%, var(--color-cream-100)), var(--color-cream-100) 45%)",
+                    paddingTop: "26px",
+                    paddingBottom: "26px",
+                    paddingLeft: "14px",
+                    paddingRight: "14px",
+                  }}
+                >
+                  <div
+                    className="w-full h-[22px]"
+                    style={{
+                      backgroundImage: "url(/images/brand/piece-border.png)",
+                      backgroundRepeat: "repeat-x",
+                      backgroundSize: "auto 100%",
+                      backgroundPosition: "left center",
+                    }}
+                  />
+                  <div style={{ padding: "18px 8px" }}>
+                    <InviteCard name={name} elapsedMs={elapsedMs} customMessage={customMessage} />
+                  </div>
+                  <div
+                    className="w-full h-[22px]"
+                    style={{
+                      backgroundImage: "url(/images/brand/piece-border.png)",
+                      backgroundRepeat: "repeat-x",
+                      backgroundSize: "auto 100%",
+                      backgroundPosition: "left center",
+                    }}
+                  />
+                </div>
               </div>
+
               <div className="flex items-center gap-3 flex-wrap justify-center">
                 <Button variant="secondary" onClick={handleSaveImage} disabled={savingImage}>
                   {savingImage ? t.invite.savingImage : t.invite.saveImage}
