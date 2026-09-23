@@ -49,6 +49,12 @@ export function PuzzlePiece({
         top: piece.home.y,
         width: piece.width,
         height: piece.height,
+        // Scale from the top-left corner, not center, so a shrunk tray
+        // piece's visual box stays exactly at (home.x, home.y) -- matching
+        // the slot math in PuzzleGame -- instead of bleeding past the tray
+        // edges as it grows toward its unscaled footprint.
+        originX: 0,
+        originY: 0,
         x,
         y,
         zIndex: dragging ? 999 : zIndex,
