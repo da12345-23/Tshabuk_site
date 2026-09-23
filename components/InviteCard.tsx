@@ -31,8 +31,8 @@ function CalendarIcon() {
 
 export const InviteCard = forwardRef<
   HTMLDivElement,
-  { name: string; elapsedMs: number; onRankSettled?: () => void }
->(function InviteCard({ name, elapsedMs, onRankSettled }, ref) {
+  { name: string; elapsedMs: number; onRankSettled?: () => void; width?: string }
+>(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(90vw, 340px)" }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
@@ -68,14 +68,14 @@ export const InviteCard = forwardRef<
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="relative mx-auto"
-        style={{ width: "min(90vw, 340px)" }}
+        style={{ width }}
       >
         {/* Mascots peeking in from outside the card -- mostly outside its
             bounds, only a small edge overlapping, so the card edge never
             slices through the middle of a character. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "26%", left: "-19%", top: "54%" }}
+          style={{ width: "31%", left: "-22%", top: "54%" }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -92,7 +92,7 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "21%", right: "-15%", top: "58%" }}
+          style={{ width: "26%", right: "-18%", top: "58%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >

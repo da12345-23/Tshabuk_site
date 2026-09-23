@@ -170,6 +170,7 @@ export default function Home() {
                   <InviteCard
                     name={name}
                     elapsedMs={elapsedMs}
+                    width="420px"
                     onRankSettled={() => setRankReady(true)}
                   />
                 </InviteFrame>
