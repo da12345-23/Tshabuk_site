@@ -3,7 +3,7 @@
 import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { borderFrameLayout } from "@/lib/jigsaw";
 
-const THICKNESS = 26;
+const THICKNESS = 38;
 
 // Literal hex values, not CSS custom properties -- resolved into a raster
 // image (see below), so nothing here depends on the page's stylesheet.
@@ -34,8 +34,10 @@ const CORNER_COLORS = [SAGE, MAROON, MUSTARD, STEEL];
  * entirely, the same way switching the mascot/logo images to plain <img>
  * fixed their export bug.
  */
-export const InviteFrame = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
-  function InviteFrame({ children }, ref) {
+export const InviteFrame = forwardRef<
+  HTMLDivElement,
+  { children: React.ReactNode; onReady?: () => void }
+>(function InviteFrame({ children, onReady }, ref) {
     const innerRef = useRef<HTMLDivElement>(null);
     const [size, setSize] = useState({ width: 340, height: 420 });
     const [frameSrc, setFrameSrc] = useState<string | null>(null);
@@ -64,13 +66,13 @@ export const InviteFrame = forwardRef<HTMLDivElement, { children: React.ReactNod
       const rectsSvg = corners
         .map(
           (c, i) =>
-            `<rect x="${c.x}" y="${c.y}" width="${c.size}" height="${c.size}" fill="${CORNER_COLORS[i]}" stroke="${INK}" stroke-opacity="0.55" stroke-width="2" />`
+            `<rect x="${c.x}" y="${c.y}" width="${c.size}" height="${c.size}" fill="${CORNER_COLORS[i]}" stroke="${INK}" stroke-opacity="0.85" stroke-width="3" />`
         )
         .join("");
       const pathsSvg = pieces
         .map(
           (p, i) =>
-            `<path d="${p.path}" transform="translate(${p.offsetX} ${p.offsetY})" fill="${TILE_COLORS[i % TILE_COLORS.length]}" stroke="${INK}" stroke-opacity="0.55" stroke-width="2" stroke-linejoin="round" />`
+            `<path d="${p.path}" transform="translate(${p.offsetX} ${p.offsetY})" fill="${TILE_COLORS[i % TILE_COLORS.length]}" stroke="${INK}" stroke-opacity="0.85" stroke-width="3" stroke-linejoin="round" />`
         )
         .join("");
       const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="${-THICKNESS} ${-THICKNESS} ${svgW} ${svgH}">${rectsSvg}${pathsSvg}</svg>`;
@@ -92,12 +94,14 @@ export const InviteFrame = forwardRef<HTMLDivElement, { children: React.ReactNod
         ctx.drawImage(img, 0, 0, svgW, svgH);
         setFrameSrc(canvas.toDataURL("image/png"));
         URL.revokeObjectURL(url);
+        onReady?.();
       };
       img.src = url;
 
       return () => {
         cancelled = true;
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [size.width, size.height, svgW, svgH]);
 
     return (
@@ -130,5 +134,4 @@ export const InviteFrame = forwardRef<HTMLDivElement, { children: React.ReactNod
         </div>
       </div>
     );
-  }
-);
+  });

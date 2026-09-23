@@ -48,6 +48,7 @@ export const dictionaries = {
       yourRank: "ترتيبك",
       saveImage: "احفظ كصورة",
       savingImage: "جارٍ الحفظ...",
+      preparingImage: "لحظات...",
     },
     leaderboard: {
       title: "لوحة المتصدرين",
@@ -98,6 +99,7 @@ export const dictionaries = {
       yourRank: "Your rank",
       saveImage: "Save as image",
       savingImage: "Saving...",
+      preparingImage: "One sec...",
     },
     leaderboard: {
       title: "Leaderboard",

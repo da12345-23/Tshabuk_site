@@ -22,6 +22,7 @@ export default function Home() {
   const [name, setName] = useState("");
   const [elapsedMs, setElapsedMs] = useState(0);
   const [savingImage, setSavingImage] = useState(false);
+  const [frameReady, setFrameReady] = useState(false);
   const [prefilledName, setPrefilledName] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +31,7 @@ export default function Home() {
   // has to play and solve the puzzle before the invite shows up. A link
   // like this always starts fresh: it must NOT fall through to the
   // "resume a solved invite" logic below, even if this device has old
-  // localStorage data from a previous, unrelated play-through.
+  // session data from a previous, unrelated play-through.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const presetName = params.get("name");
@@ -39,11 +40,16 @@ export default function Home() {
       return;
     }
 
-    // Resume a solved invite (e.g. coming back from the leaderboard)
-    // instead of forcing the guest to redo the whole flow -- only for a
-    // bare link, never for a fresh personalized one.
+    // Resume a solved invite (e.g. coming back from the leaderboard) instead
+    // of forcing the guest to redo the whole flow -- only for a bare link,
+    // never for a fresh personalized one. This uses sessionStorage, not
+    // localStorage: it must only survive within the same browser tab/visit
+    // (so going to the leaderboard and back still works), NOT come back
+    // days later when the guest opens/searches the site fresh -- otherwise
+    // every new visitor on that device would land on a stranger's old
+    // invite instead of the landing page.
     try {
-      const saved = window.localStorage.getItem("tashabuk-invite");
+      const saved = window.sessionStorage.getItem("tashabuk-invite");
       if (saved) {
         const parsed = JSON.parse(saved) as { name: string; elapsedMs: number };
         if (parsed?.name) {
@@ -58,7 +64,7 @@ export default function Home() {
   }, []);
 
   async function handleSaveImage() {
-    if (!cardRef.current || savingImage) return;
+    if (!cardRef.current || savingImage || !frameReady) return;
     setSavingImage(true);
     try {
       const { toPng } = await import("html-to-image");
@@ -79,14 +85,14 @@ export default function Home() {
     setElapsedMs(elapsed);
     setStage("reveal");
     try {
-      window.localStorage.setItem("tashabuk-invite", JSON.stringify({ name, elapsedMs: elapsed }));
+      window.sessionStorage.setItem("tashabuk-invite", JSON.stringify({ name, elapsedMs: elapsed }));
     } catch {
       // ignore
     }
     const entry = await submitScore(name, elapsed, locale);
     if (entry) {
       try {
-        window.localStorage.setItem("tashabuk-last-entry", entry.id);
+        window.sessionStorage.setItem("tashabuk-last-entry", entry.id);
       } catch {
         // ignore
       }
@@ -154,7 +160,7 @@ export default function Home() {
                 style={{ position: "absolute", top: 0, left: 0, opacity: 0, pointerEvents: "none", zIndex: -1 }}
                 aria-hidden
               >
-                <InviteFrame ref={cardRef}>
+                <InviteFrame ref={cardRef} onReady={() => setFrameReady(true)}>
                   <div style={{ padding: "22px 14px" }}>
                     <InviteCard name={name} elapsedMs={elapsedMs} />
                   </div>
@@ -162,8 +168,16 @@ export default function Home() {
               </div>
 
               <div className="flex items-center gap-3 flex-wrap justify-center">
-                <Button variant="secondary" onClick={handleSaveImage} disabled={savingImage}>
-                  {savingImage ? t.invite.savingImage : t.invite.saveImage}
+                <Button
+                  variant="secondary"
+                  onClick={handleSaveImage}
+                  disabled={savingImage || !frameReady}
+                >
+                  {savingImage
+                    ? t.invite.savingImage
+                    : frameReady
+                      ? t.invite.saveImage
+                      : t.invite.preparingImage}
                 </Button>
                 <Link href="/leaderboard">
                   <Button variant="ghost">{t.invite.viewLeaderboard}</Button>
@@ -172,8 +186,8 @@ export default function Home() {
                   variant="ghost"
                   onClick={() => {
                     try {
-                      window.localStorage.removeItem("tashabuk-invite");
-                      window.localStorage.removeItem("tashabuk-last-entry");
+                      window.sessionStorage.removeItem("tashabuk-invite");
+                      window.sessionStorage.removeItem("tashabuk-last-entry");
                     } catch {
                       // ignore
                     }

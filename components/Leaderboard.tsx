@@ -58,7 +58,7 @@ export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
   useEffect(() => {
     if (highlightId !== undefined) return;
     try {
-      setMine(window.localStorage.getItem("tashabuk-last-entry"));
+      setMine(window.sessionStorage.getItem("tashabuk-last-entry"));
     } catch {
       // ignore
     }
