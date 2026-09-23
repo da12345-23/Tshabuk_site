@@ -122,8 +122,10 @@ export const InviteFrame = forwardRef<
             width: p.size,
             height: "auto",
             transform: `rotate(${p.rot}deg)`,
-            opacity: 0.9,
-            filter: "drop-shadow(0 3px 5px rgba(43,35,32,.18))",
+            // Same soft, translucent look as the page's own floating
+            // background pieces (see FloatingPieces) -- blended into the
+            // backdrop rather than pasted on top at full opacity.
+            opacity: 0.32,
           }}
         />
       ))}
