@@ -75,7 +75,7 @@ export const InviteCard = forwardRef<
             slices through the middle of a character. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "31%", left: "-22%", top: "54%" }}
+          style={{ width: "31%", left: "-8%", top: "54%" }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -92,7 +92,7 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "26%", right: "-18%", top: "58%" }}
+          style={{ width: "26%", right: "-6%", top: "58%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
