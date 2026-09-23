@@ -72,12 +72,29 @@ export default function Home() {
     try {
       const { toPng } = await import("html-to-image");
       const dataUrl = await toPng(cardRef.current, { pixelRatio: 2, cacheBust: true });
-      const link = document.createElement("a");
-      link.download = `tashabuk-invite-${name || "guest"}.png`;
-      link.href = dataUrl;
-      link.click();
+      const fileName = `tashabuk-invite-${name || "guest"}.png`;
+
+      // A plain <a download> from a data: URL is silently a no-op on iOS
+      // Safari (and unreliable on other mobile browsers) -- it just opens
+      // or does nothing instead of saving a file. The Web Share API is the
+      // actual supported way to hand a generated image to a phone's own
+      // save/share sheet, so prefer it whenever the browser can share
+      // files at all; only fall back to the link-click trick where share
+      // isn't available (desktop browsers mostly).
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: fileName });
+      } else {
+        const link = document.createElement("a");
+        link.download = fileName;
+        link.href = dataUrl;
+        link.click();
+      }
     } catch {
-      // ignore -- best-effort export
+      // ignore -- best-effort export (includes the user dismissing the
+      // native share sheet, which rejects with an AbortError)
     } finally {
       setSavingImage(false);
     }

@@ -63,6 +63,16 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     const bboxW = pw + tabDepth * 2;
     const bboxH = ph + tabDepth * 2;
 
+    // A piece's bbox reserves huge padding on every side for the tab bulge
+    // (TAB_FRACTION=0.6 of the piece itself), but that padding is mostly
+    // transparent -- neighboring tray pieces can sit with their padding
+    // overlapping (like a jumbled pile) without actually visually
+    // colliding. Packing to this tighter pitch instead of the full bbox
+    // lets far more columns fit per row on a narrow phone screen, which
+    // keeps the tray from stacking into many rows and pushing it (and the
+    // "scroll to find the pieces" problem that causes) below the fold.
+    const PACK = 0.72;
+
     // Pick the fewest tray rows (so there's as little scrolling as
     // possible), then size the pieces to whatever fits that many columns
     // in the available width -- rather than fixing the piece scale first
@@ -71,7 +81,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     let trayScale = MIN_TRAY_SCALE;
     for (let rows = 2; rows <= MAX_TRAY_ROWS; rows++) {
       const cols = Math.ceil(PIECE_COUNT / rows);
-      const scale = (effectiveWidth / cols - GAP) / bboxW;
+      const scale = (effectiveWidth / cols - GAP) / (bboxW * PACK);
       if (scale >= MIN_TRAY_SCALE || rows === MAX_TRAY_ROWS) {
         trayCols = cols;
         trayScale = Math.max(MIN_TRAY_SCALE, Math.min(MAX_TRAY_SCALE, scale));
@@ -79,8 +89,8 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
       }
     }
 
-    const trayCellW = bboxW * trayScale + GAP;
-    const trayCellH = bboxH * trayScale + GAP;
+    const trayCellW = bboxW * trayScale * PACK + GAP;
+    const trayCellH = bboxH * trayScale * PACK + GAP;
     const trayRows = Math.ceil(PIECE_COUNT / trayCols);
     const trayWidth = trayCols * trayCellW;
     const trayHeight = trayRows * trayCellH;
@@ -219,6 +229,10 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
         </div>
       </div>
 
+      <p className="text-sm text-[var(--color-text-muted)] font-body text-center max-w-xs">
+        {t.puzzle.instructions}
+      </p>
+
       {availableWidth !== null && (
         <div
           className="relative mx-auto"
@@ -275,10 +289,6 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
           ))}
         </div>
       )}
-
-      <p className="text-sm text-[var(--color-text-muted)] font-body text-center max-w-xs">
-        {t.puzzle.instructions}
-      </p>
     </div>
   );
 }
