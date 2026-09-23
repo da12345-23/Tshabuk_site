@@ -30,8 +30,10 @@ function CalendarIcon() {
   );
 }
 
-export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: number }>(
-  function InviteCard({ name, elapsedMs }, ref) {
+export const InviteCard = forwardRef<
+  HTMLDivElement,
+  { name: string; elapsedMs: number; customMessage?: string | null }
+>(function InviteCard({ name, elapsedMs, customMessage }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
@@ -117,7 +119,7 @@ export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: 
           </h2>
 
           <p className="font-body text-[13px] leading-relaxed text-[var(--color-text-muted)] mt-3">
-            {t.invite.body}
+            {customMessage || t.invite.body}
           </p>
 
           {elapsedMs > 0 && (

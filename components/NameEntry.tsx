@@ -1,15 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useLocale } from "@/lib/locale-context";
 import { Button } from "./Button";
 
-export function NameEntry({ onStart }: { onStart: (name: string) => void }) {
+export function NameEntry({
+  onStart,
+  initialName = "",
+}: {
+  onStart: (name: string) => void;
+  initialName?: string;
+}) {
   const { t } = useLocale();
-  const [name, setName] = useState("");
+  const [name, setName] = useState(initialName);
   const [shake, setShake] = useState(0);
+
+  // initialName arrives a tick after mount (read from the URL in the
+  // parent, client-side only, to avoid an SSR/client markup mismatch).
+  useEffect(() => {
+    if (initialName) setName(initialName);
+  }, [initialName]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

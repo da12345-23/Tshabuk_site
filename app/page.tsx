@@ -21,7 +21,20 @@ export default function Home() {
   const [name, setName] = useState("");
   const [elapsedMs, setElapsedMs] = useState(0);
   const [savingImage, setSavingImage] = useState(false);
+  const [customMessage, setCustomMessage] = useState<string | null>(null);
+  const [prefilledName, setPrefilledName] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
+
+  // A personalized invite link can carry ?msg=<custom message> and an
+  // optional ?name=<guest name> to prefill the name field -- e.g.
+  // https://tshabuk.site/?name=Sara&msg=You%20mean%20the%20world%20to%20us
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get("msg");
+    const presetName = params.get("name");
+    if (msg) setCustomMessage(msg);
+    if (presetName) setPrefilledName(presetName);
+  }, []);
 
   // Resume a solved invite (e.g. coming back from the leaderboard) instead
   // of forcing the guest to redo the whole flow.
@@ -29,10 +42,15 @@ export default function Home() {
     try {
       const saved = window.localStorage.getItem("tashabuk-invite");
       if (saved) {
-        const parsed = JSON.parse(saved) as { name: string; elapsedMs: number };
+        const parsed = JSON.parse(saved) as {
+          name: string;
+          elapsedMs: number;
+          customMessage?: string | null;
+        };
         if (parsed?.name) {
           setName(parsed.name);
           setElapsedMs(parsed.elapsedMs ?? 0);
+          if (parsed.customMessage) setCustomMessage(parsed.customMessage);
           setStage("reveal");
         }
       }
@@ -63,7 +81,10 @@ export default function Home() {
     setElapsedMs(elapsed);
     setStage("reveal");
     try {
-      window.localStorage.setItem("tashabuk-invite", JSON.stringify({ name, elapsedMs: elapsed }));
+      window.localStorage.setItem(
+        "tashabuk-invite",
+        JSON.stringify({ name, elapsedMs: elapsed, customMessage })
+      );
     } catch {
       // ignore
     }
@@ -96,6 +117,7 @@ export default function Home() {
           {stage === "landing" && (
             <motion.div key="landing" exit={{ opacity: 0, scale: 0.92 }}>
               <NameEntry
+                initialName={prefilledName}
                 onStart={(n) => {
                   setName(n);
                   setStage("puzzle");
@@ -128,7 +150,28 @@ export default function Home() {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center gap-6"
             >
-              <InviteCard ref={cardRef} name={name} elapsedMs={elapsedMs} />
+              <div
+                ref={cardRef}
+                className="relative rounded-[36px]"
+                style={{
+                  background:
+                    "radial-gradient(circle at 12% 15%, color-mix(in srgb, var(--color-sage-500) 16%, var(--color-cream-100)), var(--color-cream-100) 45%), radial-gradient(circle at 88% 85%, color-mix(in srgb, var(--color-mustard-400) 18%, var(--color-cream-100)), var(--color-cream-100) 45%)",
+                  border: "3px dashed var(--color-wood-500)",
+                  padding: "44px 30px",
+                }}
+              >
+                <img
+                  src="/images/brand/piece-green-t.png"
+                  alt=""
+                  className="absolute top-3 left-3 w-9 h-auto -rotate-12 opacity-90 pointer-events-none select-none"
+                />
+                <img
+                  src="/images/brand/piece-mustard-t.png"
+                  alt=""
+                  className="absolute bottom-3 right-3 w-9 h-auto rotate-12 opacity-90 pointer-events-none select-none"
+                />
+                <InviteCard name={name} elapsedMs={elapsedMs} customMessage={customMessage} />
+              </div>
               <div className="flex items-center gap-3 flex-wrap justify-center">
                 <Button variant="secondary" onClick={handleSaveImage} disabled={savingImage}>
                   {savingImage ? t.invite.savingImage : t.invite.saveImage}
