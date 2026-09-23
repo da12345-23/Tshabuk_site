@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# raw reference/source images dropped in during design work
+# (processed copies live under public/images/)
+/Screenshot *.png
+/WhatsApp Image*.jpeg
+/_Invitation*.png
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

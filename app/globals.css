@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
+/* ---------- Primitive tokens (sampled from the تشابك logo + booth design) ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --p-sage-500: #5a9a6e;
+  --p-sage-600: #4b875c;
+  --p-sage-700: #386a46;
+  --p-sage-800: #2a4f35;
+
+  --p-maroon-500: #a85a58;
+  --p-maroon-600: #8b3a3a;
+  --p-maroon-700: #6e2c2c;
+  --p-maroon-800: #4f2020;
+
+  --p-steel-300: #b9dcf5;
+  --p-steel-400: #98cdf3;
+  --p-steel-500: #6e93b0;
+  --p-steel-600: #4e6e8d;
+  --p-steel-700: #3a5470;
+
+  --p-mustard-300: #f8dc8f;
+  --p-mustard-400: #f3c243;
+  --p-mustard-500: #dba52f;
+  --p-mustard-600: #b8841e;
+
+  --p-cream-50: #fdf8ef;
+  --p-cream-100: #f7ecd9;
+  --p-cream-200: #efdfc0;
+
+  --p-wood-300: #d9b98c;
+  --p-wood-500: #ad8253;
+  --p-wood-700: #7a5936;
+
+  --p-ink-700: #4a3f34;
+  --p-ink-900: #2b2320;
+}
+
+/* ---------- Semantic tokens ---------- */
+:root {
+  --color-bg: var(--p-cream-50);
+  --color-surface: var(--p-cream-100);
+  --color-surface-raised: #ffffff;
+  --color-border: var(--p-wood-300);
+
+  --color-primary: var(--p-sage-600);
+  --color-primary-hover: var(--p-sage-700);
+  --color-secondary: var(--p-maroon-600);
+  --color-secondary-hover: var(--p-maroon-700);
+  --color-accent: var(--p-mustard-400);
+  --color-accent-hover: var(--p-mustard-500);
+  --color-info: var(--p-steel-500);
+  --color-info-hover: var(--p-steel-600);
+
+  --color-text: var(--p-ink-900);
+  --color-text-muted: var(--p-ink-700);
+  --color-text-on-primary: #fdf8ef;
+  --color-text-on-accent: var(--p-ink-900);
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-border: var(--color-border);
+
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-secondary: var(--color-secondary);
+  --color-secondary-hover: var(--color-secondary-hover);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-info: var(--color-info);
+  --color-info-hover: var(--color-info-hover);
+
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-on-primary: var(--color-text-on-primary);
+  --color-text-on-accent: var(--color-text-on-accent);
+
+  --color-sage-500: var(--p-sage-500);
+  --color-sage-600: var(--p-sage-600);
+  --color-sage-700: var(--p-sage-700);
+  --color-sage-800: var(--p-sage-800);
+
+  --color-maroon-500: var(--p-maroon-500);
+  --color-maroon-600: var(--p-maroon-600);
+  --color-maroon-700: var(--p-maroon-700);
+  --color-maroon-800: var(--p-maroon-800);
+
+  --color-steel-300: var(--p-steel-300);
+  --color-steel-400: var(--p-steel-400);
+  --color-steel-500: var(--p-steel-500);
+  --color-steel-600: var(--p-steel-600);
+  --color-steel-700: var(--p-steel-700);
+
+  --color-mustard-300: var(--p-mustard-300);
+  --color-mustard-400: var(--p-mustard-400);
+  --color-mustard-500: var(--p-mustard-500);
+  --color-mustard-600: var(--p-mustard-600);
+
+  --color-cream-50: var(--p-cream-50);
+  --color-cream-100: var(--p-cream-100);
+  --color-cream-200: var(--p-cream-200);
+
+  --color-wood-300: var(--p-wood-300);
+  --color-wood-500: var(--p-wood-500);
+  --color-wood-700: var(--p-wood-700);
+
+  --font-display: var(--font-baloo), var(--font-cairo), ui-rounded, sans-serif;
+  --font-body: var(--font-cairo), var(--font-nunito), sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-cairo), var(--font-baloo), sans-serif;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+}
+
+/* Soft wood-grain + paper texture feel without extra image assets */
+.bg-warm-texture {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--p-mustard-300) 18%, transparent) 0, transparent 45%),
+    radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--p-steel-300) 20%, transparent) 0, transparent 40%),
+    radial-gradient(circle at 50% 90%, color-mix(in srgb, var(--p-sage-500) 12%, transparent) 0, transparent 45%);
 }
