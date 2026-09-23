@@ -72,10 +72,15 @@ export const InviteCard = forwardRef<
       >
         {/* Mascots peeking in from outside the card -- mostly outside its
             bounds, only a small edge overlapping, so the card edge never
-            slices through the middle of a character. */}
+            slices through the middle of a character. Size and offset are
+            fixed pixels, not a % of card width: this same component
+            renders at two different widths (the on-page card and the
+            wider export card), and percentage values would scale the
+            mascots up and shift them further onto the wider one -- enough
+            to cover the card's own text. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "31%", left: "-8%", top: "54%" }}
+          style={{ width: 105, left: -28, top: "54%" }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -92,7 +97,7 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "26%", right: "-6%", top: "58%" }}
+          style={{ width: 88, right: -22, top: "58%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
@@ -110,7 +115,6 @@ export const InviteCard = forwardRef<
           className="relative rounded-t-[28px] rounded-b-[10px] px-7 pt-8 pb-6 text-center"
           style={{
             background: "var(--color-cream-50)",
-            boxShadow: "0 18px 30px rgba(43,35,32,.22)",
             border: "1px solid color-mix(in srgb, var(--color-border) 40%, transparent)",
           }}
         >
@@ -154,7 +158,6 @@ export const InviteCard = forwardRef<
           style={{
             background:
               "linear-gradient(160deg, var(--color-wood-300) 0%, var(--color-sage-500) 55%, var(--color-wood-500) 100%)",
-            boxShadow: "0 18px 30px rgba(43,35,32,.22)",
           }}
         >
           <div
