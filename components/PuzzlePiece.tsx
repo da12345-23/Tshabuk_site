@@ -50,7 +50,7 @@ export function PuzzlePiece({
         touchAction: "none",
         cursor: piece.locked ? "default" : dragging ? "grabbing" : "grab",
         filter: piece.locked
-          ? "drop-shadow(0 1px 1px rgba(43,35,32,0.15))"
+          ? "none"
           : dragging
           ? "drop-shadow(0 14px 18px rgba(43,35,32,0.35))"
           : "drop-shadow(0 4px 6px rgba(43,35,32,0.25))",

@@ -80,7 +80,7 @@ export function InviteCard({ name, elapsedMs }: { name: string; elapsedMs: numbe
         }}
       >
         <div className="relative mx-auto mb-2 w-14 h-14">
-          <Image src="/images/brand/logo-clean.png" alt={t.appName} fill className="object-contain" />
+          <Image src="/images/brand/logo-clean-t.png" alt={t.appName} fill className="object-contain" />
         </div>
 
         <p className="font-display text-sm text-[var(--color-secondary)] tracking-wide">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { NameEntry } from "@/components/NameEntry";
@@ -21,10 +21,33 @@ export default function Home() {
   const [name, setName] = useState("");
   const [elapsedMs, setElapsedMs] = useState(0);
 
+  // Resume a solved invite (e.g. coming back from the leaderboard) instead
+  // of forcing the guest to redo the whole flow.
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("tashabuk-invite");
+      if (saved) {
+        const parsed = JSON.parse(saved) as { name: string; elapsedMs: number };
+        if (parsed?.name) {
+          setName(parsed.name);
+          setElapsedMs(parsed.elapsedMs ?? 0);
+          setStage("reveal");
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
   async function handleSolved(elapsed: number) {
     celebrate();
     setElapsedMs(elapsed);
     setStage("reveal");
+    try {
+      window.localStorage.setItem("tashabuk-invite", JSON.stringify({ name, elapsedMs: elapsed }));
+    } catch {
+      // ignore
+    }
     const entry = await submitScore(name, elapsed, locale);
     if (entry) {
       try {
@@ -94,6 +117,12 @@ export default function Home() {
                 <Button
                   variant="ghost"
                   onClick={() => {
+                    try {
+                      window.localStorage.removeItem("tashabuk-invite");
+                      window.localStorage.removeItem("tashabuk-last-entry");
+                    } catch {
+                      // ignore
+                    }
                     setStage("landing");
                     setName("");
                     setElapsedMs(0);

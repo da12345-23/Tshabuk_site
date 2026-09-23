@@ -182,28 +182,30 @@ export function sliceImageToPieces(
   image: HTMLImageElement,
   layout: JigsawLayout
 ): Map<string, HTMLCanvasElement> {
+  // Render at device-pixel resolution so pieces stay sharp on retina
+  // screens instead of the browser upscaling a 1x-resolution canvas.
+  const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 3);
+
   const full = document.createElement("canvas");
-  full.width = layout.boardWidth;
-  full.height = layout.boardHeight;
+  full.width = layout.boardWidth * dpr;
+  full.height = layout.boardHeight * dpr;
   const fullCtx = full.getContext("2d")!;
+  fullCtx.scale(dpr, dpr);
   fullCtx.drawImage(image, 0, 0, layout.boardWidth, layout.boardHeight);
 
   const result = new Map<string, HTMLCanvasElement>();
 
   for (const piece of layout.pieces) {
     const canvas = document.createElement("canvas");
-    canvas.width = piece.bbox.width;
-    canvas.height = piece.bbox.height;
+    canvas.width = piece.bbox.width * dpr;
+    canvas.height = piece.bbox.height * dpr;
     const ctx = canvas.getContext("2d")!;
+    ctx.scale(dpr, dpr);
     ctx.save();
     ctx.translate(-piece.bbox.x, -piece.bbox.y);
     const clip = new Path2D(piece.path);
     ctx.clip(clip);
-    ctx.drawImage(full, 0, 0);
-    // Outline stroke to echo the logo's hand-drawn piece borders.
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = "rgba(43, 35, 32, 0.55)";
-    ctx.stroke(clip);
+    ctx.drawImage(full, 0, 0, layout.boardWidth, layout.boardHeight);
     ctx.restore();
     result.set(`${piece.row}-${piece.col}`, canvas);
   }

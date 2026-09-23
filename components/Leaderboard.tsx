@@ -13,6 +13,42 @@ function formatTime(ms: number) {
 }
 
 const MEDAL = ["🥇", "🥈", "🥉"];
+const TOP_N = 10;
+
+function Row({
+  entry,
+  rank,
+  mine,
+  delay,
+}: {
+  entry: LeaderboardEntry;
+  rank: number;
+  mine: boolean;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      key={entry.id}
+      layout
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay, duration: 0.35 }}
+      className={`px-5 py-3 grid grid-cols-[2.2rem_1fr_4.5rem] items-center font-body text-sm border-b border-[var(--color-border)]/15 last:border-b-0 ${
+        mine ? "bg-[var(--color-accent)]/20" : ""
+      }`}
+    >
+      <span className="text-[var(--color-text-muted)] font-semibold">
+        {MEDAL[rank - 1] ?? rank}
+      </span>
+      <span className={`truncate ${mine ? "font-bold text-[var(--color-secondary)]" : "text-[var(--color-text)]"}`}>
+        {entry.name}
+      </span>
+      <span className="text-end tabular-nums text-[var(--color-text)]">
+        {formatTime(entry.time_ms)}
+      </span>
+    </motion.div>
+  );
+}
 
 export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
   const { t } = useLocale();
@@ -42,6 +78,10 @@ export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
     };
   }, []);
 
+  const topEntries = entries?.slice(0, TOP_N) ?? [];
+  const myIndex = entries?.findIndex((e) => e.id === mine) ?? -1;
+  const myEntry = myIndex >= TOP_N ? entries?.[myIndex] : undefined;
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="rounded-3xl bg-[var(--color-surface-raised)]/90 backdrop-blur border border-[var(--color-border)]/40 shadow-lg overflow-hidden">
@@ -64,31 +104,16 @@ export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
         )}
 
         <AnimatePresence initial={false}>
-          {entries?.map((e, i) => {
-            const isMine = e.id === mine;
-            return (
-              <motion.div
-                key={e.id}
-                layout
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: Math.min(i, 8) * 0.035, duration: 0.35 }}
-                className={`px-5 py-3 grid grid-cols-[2.2rem_1fr_4.5rem] items-center font-body text-sm border-b border-[var(--color-border)]/15 last:border-b-0 ${
-                  isMine ? "bg-[var(--color-accent)]/20" : ""
-                }`}
-              >
-                <span className="text-[var(--color-text-muted)] font-semibold">
-                  {MEDAL[i] ?? i + 1}
-                </span>
-                <span className={`truncate ${isMine ? "font-bold text-[var(--color-secondary)]" : "text-[var(--color-text)]"}`}>
-                  {e.name}
-                </span>
-                <span className="text-end tabular-nums text-[var(--color-text)]">
-                  {formatTime(e.time_ms)}
-                </span>
-              </motion.div>
-            );
-          })}
+          {topEntries.map((e, i) => (
+            <Row key={e.id} entry={e} rank={i + 1} mine={e.id === mine} delay={Math.min(i, 8) * 0.035} />
+          ))}
+
+          {myEntry && (
+            <div key="gap" className="px-5 py-1.5 text-center text-xs text-[var(--color-text-muted)] font-body select-none">
+              &bull; &bull; &bull;
+            </div>
+          )}
+          {myEntry && <Row key={myEntry.id} entry={myEntry} rank={myIndex + 1} mine delay={0} />}
         </AnimatePresence>
       </div>
     </div>
