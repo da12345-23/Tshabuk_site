@@ -2,7 +2,6 @@
 
 import { forwardRef, useEffect, useState } from "react";
 import { motion } from "motion/react";
-import Image from "next/image";
 import { useLocale } from "@/lib/locale-context";
 import { fetchLeaderboard } from "@/lib/leaderboard-client";
 
@@ -64,50 +63,58 @@ export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: 
         className="relative mx-auto"
         style={{ width: "min(90vw, 340px)" }}
       >
-        {/* Mascots flanking the notepad, per the brand invite reference */}
+        {/* Mascots peeking in from outside the card -- mostly outside its
+            bounds, only a small edge overlapping, so the card edge never
+            slices through the middle of a character. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "27%", left: "-13%", top: "52%" }}
+          style={{ width: "26%", left: "-19%", top: "54%" }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element -- plain
+              img is required: next/image renders unreliably (sometimes the
+              wrong source entirely) inside the off-screen html-to-image
+              export target. */}
+          <img
             src="/images/brand/mascot-nerve-t.png"
             alt=""
-            width={270}
-            height={345}
-            className="w-full h-auto"
+            className="w-full h-auto block"
             style={{ filter: "drop-shadow(0 10px 12px rgba(43,35,32,.28))" }}
           />
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: "22%", right: "-10%", top: "56%" }}
+          style={{ width: "21%", right: "-15%", top: "58%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/images/brand/mascot-muscle-t.png"
             alt=""
-            width={211}
-            height={357}
-            className="w-full h-auto"
+            className="w-full h-auto block"
             style={{ filter: "drop-shadow(0 10px 12px rgba(43,35,32,.28))" }}
           />
         </motion.div>
 
         {/* Notepad */}
         <div
-          className="relative rounded-t-[28px] rounded-b-[10px] px-7 pt-7 pb-6 text-center"
+          className="relative rounded-t-[28px] rounded-b-[10px] px-7 pt-8 pb-6 text-center"
           style={{
             background: "var(--color-cream-50)",
             boxShadow: "0 18px 30px rgba(43,35,32,.22)",
             border: "1px solid color-mix(in srgb, var(--color-border) 40%, transparent)",
           }}
         >
-          <div className="relative mx-auto mb-2 w-14 h-14">
-            <Image src="/images/brand/logo-clean-t.png" alt={t.appName} fill className="object-contain" />
-          </div>
+          {/* Campaign logo: the card's header element, large and centered */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/brand/logo-clean-t.png"
+            alt={t.appName}
+            className="mx-auto mb-2 block"
+            style={{ width: 96, height: 96, objectFit: "contain" }}
+          />
 
           <p className="font-display text-sm text-[var(--color-secondary)] tracking-wide">
             {t.invite.greeting}
@@ -147,7 +154,12 @@ export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: 
             className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[var(--color-cream-50)] ring-2 ring-[var(--color-wood-300)] shadow-md flex items-center justify-center overflow-hidden"
             aria-hidden
           >
-            <Image src="/images/brand/piece-mustard-t.png" alt="" width={28} height={28} className="object-contain" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/brand/piece-mustard-t.png"
+              alt=""
+              style={{ width: 28, height: 28, objectFit: "contain" }}
+            />
           </div>
 
           <div className="flex flex-col gap-2">

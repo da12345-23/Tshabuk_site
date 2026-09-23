@@ -27,16 +27,21 @@ export default function Home() {
 
   // A personalized invite link can carry ?name=<guest name> to prefill the
   // name field -- e.g. https://tshabuk.site/?name=Sara -- the guest still
-  // has to play and solve the puzzle before the invite shows up.
+  // has to play and solve the puzzle before the invite shows up. A link
+  // like this always starts fresh: it must NOT fall through to the
+  // "resume a solved invite" logic below, even if this device has old
+  // localStorage data from a previous, unrelated play-through.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const presetName = params.get("name");
-    if (presetName) setPrefilledName(presetName);
-  }, []);
+    if (presetName) {
+      setPrefilledName(presetName);
+      return;
+    }
 
-  // Resume a solved invite (e.g. coming back from the leaderboard) instead
-  // of forcing the guest to redo the whole flow.
-  useEffect(() => {
+    // Resume a solved invite (e.g. coming back from the leaderboard)
+    // instead of forcing the guest to redo the whole flow -- only for a
+    // bare link, never for a fresh personalized one.
     try {
       const saved = window.localStorage.getItem("tashabuk-invite");
       if (saved) {
@@ -142,9 +147,13 @@ export default function Home() {
             >
               <InviteCard name={name} elapsedMs={elapsedMs} />
 
-              {/* Off-screen framed copy, used only as the "Save as image"
-                  export target -- the border never shows on the page itself. */}
-              <div style={{ position: "fixed", top: 0, left: -99999, pointerEvents: "none" }} aria-hidden>
+              {/* Hidden (not off-screen -- Next/Image lazy-loading needs it
+                  in-viewport) framed copy, used only as the "Save as image"
+                  export target. The border never shows on the page itself. */}
+              <div
+                style={{ position: "absolute", top: 0, left: 0, opacity: 0, pointerEvents: "none", zIndex: -1 }}
+                aria-hidden
+              >
                 <InviteFrame ref={cardRef}>
                   <div style={{ padding: "22px 14px" }}>
                     <InviteCard name={name} elapsedMs={elapsedMs} />

@@ -3,20 +3,26 @@
 import { forwardRef, useLayoutEffect, useRef, useState } from "react";
 import { borderFrameLayout } from "@/lib/jigsaw";
 
-const THICKNESS = 18;
+const THICKNESS = 26;
+
+// Literal hex values, not CSS custom properties -- this frame is only ever
+// rendered inside an off-screen copy captured by html-to-image, and that
+// capture pipeline does not reliably resolve var(--color-x) on SVG fill/
+// stroke attributes, silently dropping the color instead of erroring.
+const SAGE = "#5a9a6e";
+const MAROON = "#a85a58";
+const STEEL = "#6e93b0";
+const MUSTARD = "#f3c243";
+const CREAM_100 = "#f7ecd9";
+const INK = "#2b2320";
 
 // The exact four logo colors, cycling piece to piece -- colorful and
 // celebratory, matching the brand palette exactly rather than a neutral
 // background tone.
-const TILE_COLORS = [
-  "var(--color-sage-500)",
-  "var(--color-maroon-500)",
-  "var(--color-steel-500)",
-  "var(--color-mustard-400)",
-];
+const TILE_COLORS = [SAGE, MAROON, STEEL, MUSTARD];
 // corners come back as [top-left, top-right, bottom-right, bottom-left] --
 // echo the logo's own arrangement (green / maroon / mustard / blue).
-const CORNER_COLORS = [TILE_COLORS[0], TILE_COLORS[1], TILE_COLORS[3], TILE_COLORS[2]];
+const CORNER_COLORS = [SAGE, MAROON, MUSTARD, STEEL];
 
 /**
  * Wraps its children in a picture-frame border made of many small,
@@ -51,7 +57,7 @@ export const InviteFrame = forwardRef<HTMLDivElement, { children: React.ReactNod
         style={{
           position: "relative",
           display: "inline-block",
-          background: "var(--color-cream-50)",
+          background: CREAM_100,
           overflow: "visible",
         }}
       >
@@ -76,9 +82,9 @@ export const InviteFrame = forwardRef<HTMLDivElement, { children: React.ReactNod
               width={c.size}
               height={c.size}
               fill={CORNER_COLORS[i]}
-              stroke="var(--color-text)"
+              stroke={INK}
               strokeOpacity={0.55}
-              strokeWidth={1.5}
+              strokeWidth={2}
             />
           ))}
           {pieces.map((p, i) => (
@@ -87,9 +93,9 @@ export const InviteFrame = forwardRef<HTMLDivElement, { children: React.ReactNod
               d={p.path}
               transform={`translate(${p.offsetX} ${p.offsetY})`}
               fill={TILE_COLORS[i % TILE_COLORS.length]}
-              stroke="var(--color-text)"
+              stroke={INK}
               strokeOpacity={0.55}
-              strokeWidth={1.5}
+              strokeWidth={2}
               strokeLinejoin="round"
             />
           ))}
