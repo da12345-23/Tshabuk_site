@@ -2,7 +2,7 @@
 
 import { forwardRef, useEffect, useRef } from "react";
 
-const PADDING = 96;
+const PADDING = 140;
 
 // Literal hex values, not CSS custom properties -- proven unreliable to
 // resolve inside the html-to-image export target in the past.
@@ -28,19 +28,16 @@ type DecorPiece = {
   right?: number | string;
 };
 
-// The same puzzle-piece art scattered across the live page background
-// (see FloatingPieces), reused here as the export's decoration instead of
-// a drawn border -- plain <img> tags, which is the one thing proven to
+// The same puzzle-piece art used on the live page background (see
+// FloatingPieces), reused here as the export's decoration instead of a
+// drawn border -- plain <img> tags, which is the one thing proven to
 // export reliably (next/image and inline <svg> have both misbehaved here).
+// One clear, generously-sized piece per logo color, not a tiny scatter.
 const DECOR: DecorPiece[] = [
-  { src: "/images/brand/piece-green-t.png", size: 50, rot: -14, top: 6, left: 10 },
-  { src: "/images/brand/piece-maroon-t.png", size: 40, rot: 12, top: 14, right: 16 },
-  { src: "/images/brand/piece-mustard-t.png", size: 44, rot: -10, bottom: 16, left: 22 },
-  { src: "/images/brand/piece-green-t.png", size: 46, rot: 16, bottom: 10, right: 14 },
-  { src: "/images/brand/piece-maroon-t.png", size: 34, rot: 8, top: "40%", left: 6 },
-  { src: "/images/brand/piece-mustard-t.png", size: 32, rot: -8, top: "44%", right: 8 },
-  { src: "/images/brand/piece-green-t.png", size: 26, rot: 22, top: 42, left: "38%" },
-  { src: "/images/brand/piece-mustard-t.png", size: 24, rot: -18, bottom: 34, right: "34%" },
+  { src: "/images/brand/piece-green-t.png", size: 122, rot: -14, top: 4, left: 4 },
+  { src: "/images/brand/piece-maroon-t.png", size: 112, rot: 12, top: 6, right: 2 },
+  { src: "/images/brand/piece-mustard-t.png", size: 118, rot: -10, bottom: 4, left: 2 },
+  { src: "/images/brand/piece-blue-t.png", size: 112, rot: 14, bottom: 2, right: 4 },
 ];
 
 /**
