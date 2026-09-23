@@ -63,14 +63,13 @@ export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: 
         className="relative mx-auto"
         style={{ width: "min(90vw, 340px)" }}
       >
-        {/* Mascots fully inside the card's own bounds, with real margin on
-            every side (never bleeding past the card edge, the viewport, or
-            any overflow:hidden ancestor, so no part of either character is
-            ever clipped). */}
+        {/* Mascots peeking in from outside the card -- mostly outside its
+            bounds, only a small edge overlapping, so the card edge never
+            slices through the middle of a character. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 60, left: 24, bottom: 28 }}
-          animate={{ y: [0, -6, 0], rotate: [-3, 2, -3] }}
+          style={{ width: "26%", left: "-19%", top: "54%" }}
+          animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- plain
@@ -81,13 +80,13 @@ export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: 
             src="/images/brand/mascot-nerve-t.png"
             alt=""
             className="w-full h-auto block"
-            style={{ filter: "drop-shadow(0 8px 10px rgba(43,35,32,.28))" }}
+            style={{ filter: "drop-shadow(0 10px 12px rgba(43,35,32,.28))" }}
           />
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 52, right: 24, bottom: 28 }}
-          animate={{ y: [0, 6, 0], rotate: [3, -2, 3] }}
+          style={{ width: "21%", right: "-15%", top: "58%" }}
+          animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -95,7 +94,7 @@ export const InviteCard = forwardRef<HTMLDivElement, { name: string; elapsedMs: 
             src="/images/brand/mascot-muscle-t.png"
             alt=""
             className="w-full h-auto block"
-            style={{ filter: "drop-shadow(0 8px 10px rgba(43,35,32,.28))" }}
+            style={{ filter: "drop-shadow(0 10px 12px rgba(43,35,32,.28))" }}
           />
         </motion.div>
 
