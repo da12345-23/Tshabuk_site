@@ -13,10 +13,9 @@ const TAB_FRACTION = 0.3;
 const GAP = 10;
 const SEED = 7;
 const IMAGE_SRC = "/images/puzzle-source.png";
-// Pieces render slightly smaller while still in the tray, and grow to
-// true size once snapped onto the board -- kept close to full size so
-// they don't look lost in their tray slot.
-const TRAY_SCALE = 0.82;
+const PIECE_COUNT = ROWS * COLS;
+const MIN_TRAY_SCALE = 0.5;
+const MAX_TRAY_SCALE = 0.85;
 
 function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
@@ -63,12 +62,26 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     const tabDepth = TAB_FRACTION * Math.min(pw, ph);
     const bboxW = pw + tabDepth * 2;
     const bboxH = ph + tabDepth * 2;
-    const trayCellW = bboxW * TRAY_SCALE + GAP;
-    const trayCellH = bboxH * TRAY_SCALE + GAP;
-    // Fit as many piece columns as the available width allows, so wide
-    // screens spread the tray sideways instead of forcing a tall scroll.
-    const trayCols = Math.max(2, Math.min(ROWS * COLS, Math.floor(effectiveWidth / trayCellW)));
-    const trayRows = Math.ceil((ROWS * COLS) / trayCols);
+
+    // Pick the fewest tray rows (so there's as little scrolling as
+    // possible), then size the pieces to whatever fits that many columns
+    // in the available width -- rather than fixing the piece scale first
+    // and letting the row count (and scroll) fall out wherever.
+    let trayCols = PIECE_COUNT;
+    let trayScale = MIN_TRAY_SCALE;
+    for (let rows = 2; rows <= 5; rows++) {
+      const cols = Math.ceil(PIECE_COUNT / rows);
+      const scale = (effectiveWidth / cols - GAP) / bboxW;
+      if (scale >= MIN_TRAY_SCALE || rows === 5) {
+        trayCols = cols;
+        trayScale = Math.max(MIN_TRAY_SCALE, Math.min(MAX_TRAY_SCALE, scale));
+        break;
+      }
+    }
+
+    const trayCellW = bboxW * trayScale + GAP;
+    const trayCellH = bboxH * trayScale + GAP;
+    const trayRows = Math.ceil(PIECE_COUNT / trayCols);
     const trayWidth = trayCols * trayCellW;
     const trayHeight = trayRows * trayCellH;
     const stageWidth = Math.max(boardWidth, trayWidth);
@@ -82,6 +95,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
       trayCellH,
       trayCols,
       trayRows,
+      trayScale,
       stageWidth,
       stageHeight,
       boardOffsetX,
@@ -252,7 +266,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
               bringToFront={bringToFront}
               onSettle={handleSettle}
               onLockBurst={handleLockBurst}
-              trayScale={TRAY_SCALE}
+              trayScale={geometry.trayScale}
             />
           ))}
 
