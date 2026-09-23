@@ -10,12 +10,13 @@ import { useLocale } from "@/lib/locale-context";
 const ROWS = 3;
 const COLS = 3;
 const TAB_FRACTION = 0.3;
-const GAP = 12;
+const GAP = 10;
 const SEED = 7;
 const IMAGE_SRC = "/images/puzzle-source.png";
-// Pieces render smaller while still in the tray (compact, no scrolling)
-// and grow to true size only once snapped onto the board.
-const TRAY_SCALE = 0.58;
+// Pieces render slightly smaller while still in the tray, and grow to
+// true size once snapped onto the board -- kept close to full size so
+// they don't look lost in their tray slot.
+const TRAY_SCALE = 0.82;
 
 function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
@@ -192,7 +193,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   const lockedCount = pieces.filter((p) => p.locked).length;
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full max-w-[720px] mx-auto">
+    <div ref={containerRef} className="flex flex-col items-center gap-4 w-full max-w-[900px] mx-auto">
       <div className="flex items-center gap-6 rounded-full bg-[var(--color-surface-raised)] px-6 py-2.5 shadow-sm border border-[var(--color-border)]/40 font-display text-[var(--color-text)]">
         <div className="flex items-baseline gap-1.5">
           <span className="text-xs text-[var(--color-text-muted)]">{t.puzzle.timer}</span>
