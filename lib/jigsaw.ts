@@ -4,6 +4,13 @@
 
 export type EdgeSign = 1 | -1;
 
+// The tab's bulb bezier control points reach roughly 2.9x the bump size
+// (bump itself is ~0.16-0.19x the edge length), so the bounding box must
+// pad by more than that or the rounded tip gets clipped by the canvas
+// edge -- this is the single source of truth so tray-layout sizing
+// (PuzzleGame) can't drift out of sync with the actual clip geometry.
+export const TAB_FRACTION = 0.6;
+
 export type PieceGeometry = {
   row: number;
   col: number;
@@ -135,7 +142,7 @@ export function generateJigsawLayout(
   );
 
   const pieces: PieceGeometry[] = [];
-  const tabDepth = Math.min(pw, ph) * 0.42;
+  const tabDepth = Math.min(pw, ph) * TAB_FRACTION;
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {

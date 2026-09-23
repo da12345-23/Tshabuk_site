@@ -90,7 +90,7 @@ export function PuzzlePiece({
         const newX = piece.home.x + info.offset.x;
         const newY = piece.home.y + info.offset.y;
         const dist = Math.hypot(newX - piece.target.x, newY - piece.target.y);
-        const snapped = dist < 34;
+        const snapped = dist < 0.4 * piece.width;
         x.set(0);
         y.set(0);
         onSettle(piece.id, { x: newX, y: newY }, snapped);

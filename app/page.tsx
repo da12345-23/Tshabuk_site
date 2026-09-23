@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { NameEntry } from "@/components/NameEntry";
@@ -20,6 +20,8 @@ export default function Home() {
   const [stage, setStage] = useState<Stage>("landing");
   const [name, setName] = useState("");
   const [elapsedMs, setElapsedMs] = useState(0);
+  const [savingImage, setSavingImage] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   // Resume a solved invite (e.g. coming back from the leaderboard) instead
   // of forcing the guest to redo the whole flow.
@@ -38,6 +40,23 @@ export default function Home() {
       // ignore
     }
   }, []);
+
+  async function handleSaveImage() {
+    if (!cardRef.current || savingImage) return;
+    setSavingImage(true);
+    try {
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(cardRef.current, { pixelRatio: 2, cacheBust: true });
+      const link = document.createElement("a");
+      link.download = `tashabuk-invite-${name || "guest"}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch {
+      // ignore -- best-effort export
+    } finally {
+      setSavingImage(false);
+    }
+  }
 
   async function handleSolved(elapsed: number) {
     celebrate();
@@ -109,10 +128,13 @@ export default function Home() {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center gap-6"
             >
-              <InviteCard name={name} elapsedMs={elapsedMs} />
+              <InviteCard ref={cardRef} name={name} elapsedMs={elapsedMs} />
               <div className="flex items-center gap-3 flex-wrap justify-center">
+                <Button variant="secondary" onClick={handleSaveImage} disabled={savingImage}>
+                  {savingImage ? t.invite.savingImage : t.invite.saveImage}
+                </Button>
                 <Link href="/leaderboard">
-                  <Button variant="secondary">{t.invite.viewLeaderboard}</Button>
+                  <Button variant="ghost">{t.invite.viewLeaderboard}</Button>
                 </Link>
                 <Button
                   variant="ghost"

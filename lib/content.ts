@@ -45,6 +45,9 @@ export const dictionaries = {
       viewLeaderboard: "لوحة المتصدرين",
       playAgain: "العب مرة أخرى",
       yourTime: "وقتك",
+      yourRank: "ترتيبك",
+      saveImage: "احفظ كصورة",
+      savingImage: "جارٍ الحفظ...",
     },
     leaderboard: {
       title: "لوحة المتصدرين",
@@ -92,6 +95,9 @@ export const dictionaries = {
       viewLeaderboard: "Leaderboard",
       playAgain: "Play again",
       yourTime: "Your time",
+      yourRank: "Your rank",
+      saveImage: "Save as image",
+      savingImage: "Saving...",
     },
     leaderboard: {
       title: "Leaderboard",

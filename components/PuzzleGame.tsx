@@ -2,14 +2,13 @@
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { generateJigsawLayout, sliceImageToPieces, type JigsawLayout } from "@/lib/jigsaw";
+import { generateJigsawLayout, sliceImageToPieces, TAB_FRACTION, type JigsawLayout } from "@/lib/jigsaw";
 import { PuzzlePiece, type PieceRuntime } from "./PuzzlePiece";
 import { SparkleBurst } from "./SparkleBurst";
 import { useLocale } from "@/lib/locale-context";
 
 const ROWS = 3;
 const COLS = 3;
-const TAB_FRACTION = 0.3;
 const GAP = 10;
 const SEED = 7;
 const IMAGE_SRC = "/images/puzzle-source.png";
