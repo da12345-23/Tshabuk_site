@@ -248,6 +248,15 @@ export function generateJigsawLayout(
     Array.from({ length: cols }, () => (rand() > 0.5 ? 1 : -1))
   );
 
+  // One jitter value per *shared edge*, used by both neighbors -- a per-piece
+  // jitter made the two sides of an edge different sizes so they never mated.
+  const vJit: number[][] = Array.from({ length: rows }, () =>
+    Array.from({ length: Math.max(cols - 1, 0) }, () => rand())
+  );
+  const hJit: number[][] = Array.from({ length: Math.max(rows - 1, 0) }, () =>
+    Array.from({ length: cols }, () => rand())
+  );
+
   const pieces: PieceGeometry[] = [];
   const tabDepth = Math.min(pw, ph) * TAB_FRACTION;
 
@@ -257,18 +266,21 @@ export function generateJigsawLayout(
       const y0 = r * ph;
       const x1 = x0 + pw;
       const y1 = y0 + ph;
-      const jitter = rand();
 
       const topSign = r === 0 ? 0 : hSign[r - 1][c];
       const rightSign = c === cols - 1 ? 0 : vSign[r][c];
       const bottomSign = r === rows - 1 ? 0 : hSign[r][c];
       const leftSign = c === 0 ? 0 : vSign[r][c - 1];
+      const topJ = r === 0 ? 0 : hJit[r - 1][c];
+      const rightJ = c === cols - 1 ? 0 : vJit[r][c];
+      const bottomJ = r === rows - 1 ? 0 : hJit[r][c];
+      const leftJ = c === 0 ? 0 : vJit[r][c - 1];
 
       let d = `M ${x0} ${y0} `;
-      d += placeEdge(x0, y0, x1, y0, topSign, jitter) + " ";
-      d += placeEdge(x1, y0, x1, y1, rightSign as EdgeSign | 0, jitter) + " ";
-      d += placeEdge(x1, y1, x0, y1, bottomSign ? ((-bottomSign) as EdgeSign) : 0, jitter) + " ";
-      d += placeEdge(x0, y1, x0, y0, leftSign ? ((-leftSign) as EdgeSign) : 0, jitter) + " ";
+      d += placeEdge(x0, y0, x1, y0, topSign, topJ) + " ";
+      d += placeEdge(x1, y0, x1, y1, rightSign as EdgeSign | 0, rightJ) + " ";
+      d += placeEdge(x1, y1, x0, y1, bottomSign ? ((-bottomSign) as EdgeSign) : 0, bottomJ) + " ";
+      d += placeEdge(x0, y1, x0, y0, leftSign ? ((-leftSign) as EdgeSign) : 0, leftJ) + " ";
       d += "Z";
 
       const bbox = {
@@ -315,12 +327,28 @@ export function sliceImageToPieces(
     canvas.height = piece.bbox.height * dpr;
     const ctx = canvas.getContext("2d")!;
     ctx.scale(dpr, dpr);
+    const clip = new Path2D(piece.path);
     ctx.save();
     ctx.translate(-piece.bbox.x, -piece.bbox.y);
-    const clip = new Path2D(piece.path);
     ctx.clip(clip);
     ctx.drawImage(full, 0, 0, layout.boardWidth, layout.boardHeight);
     ctx.restore();
+
+    // Bleed the piece's edge ~0.6px outward by stroking its outline with the
+    // image itself (outside the clip, so it isn't cancelled), so neighbors
+    // overlap slightly and no anti-aliased hairline shows along the seams
+    // once the puzzle is solved.
+    const pattern = ctx.createPattern(full, "no-repeat");
+    if (pattern) {
+      pattern.setTransform(new DOMMatrix().scale(1 / dpr));
+      ctx.save();
+      ctx.translate(-piece.bbox.x, -piece.bbox.y);
+      ctx.strokeStyle = pattern;
+      ctx.lineWidth = 1.2;
+      ctx.lineJoin = "round";
+      ctx.stroke(clip);
+      ctx.restore();
+    }
     result.set(`${piece.row}-${piece.col}`, canvas);
   }
 

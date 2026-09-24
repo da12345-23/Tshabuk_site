@@ -80,7 +80,7 @@ export const InviteCard = forwardRef<
             to cover the card's own text. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 105, left: -28, top: "54%" }}
+          style={{ width: 105, left: -30, top: "63%" }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -97,7 +97,7 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 88, right: -22, top: "58%" }}
+          style={{ width: 88, right: -24, top: "64%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >

@@ -156,7 +156,7 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.94 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col items-center gap-4"
+              className="flex flex-col items-center gap-3 pt-8"
             >
               <h2 className="font-display text-xl font-bold text-[var(--color-text)] text-center px-6">
                 {t.puzzle.title}

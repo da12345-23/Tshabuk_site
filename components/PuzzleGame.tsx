@@ -28,6 +28,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   const { t } = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const [availableWidth, setAvailableWidth] = useState<number | null>(null);
+  const [viewportH, setViewportH] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [pieces, setPieces] = useState<PieceRuntime[]>([]);
   const [zOrder, setZOrder] = useState<Record<string, number>>({});
@@ -47,10 +48,17 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   useLayoutEffect(() => {
     if (!containerRef.current) return;
     setAvailableWidth(containerRef.current.clientWidth);
+    setViewportH(window.innerHeight);
   }, []);
 
+  // Height-aware too: on a short phone screen a 300px board plus the tray
+  // pushes the pieces below the fold, so shrink the board (the tray scales
+  // with it) until the whole stage fits better.
   const boardWidth = availableWidth
-    ? Math.max(220, Math.min(300, availableWidth - 24))
+    ? Math.max(
+        220,
+        Math.min(300, availableWidth - 24, viewportH ? (viewportH - 330) / 1.9 : 300)
+      )
     : 260;
   // puzzle-source.png is a square composite, so the board stays square too.
   const boardHeight = boardWidth;
@@ -81,7 +89,9 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     let trayScale = MIN_TRAY_SCALE;
     for (let rows = 2; rows <= MAX_TRAY_ROWS; rows++) {
       const cols = Math.ceil(PIECE_COUNT / rows);
-      const scale = (effectiveWidth / cols - GAP) / (bboxW * PACK);
+      // Reserve 28px so the (centered) bboxes of the outer columns, which
+      // stick out a little past their cells, stay on screen.
+      const scale = ((effectiveWidth - 28) / cols - GAP) / (bboxW * PACK);
       if (scale >= MIN_TRAY_SCALE || rows === MAX_TRAY_ROWS) {
         trayCols = cols;
         trayScale = Math.max(MIN_TRAY_SCALE, Math.min(MAX_TRAY_SCALE, scale));
@@ -139,8 +149,12 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
         const jitterX = (Math.random() - 0.5) * 8;
         const jitterY = (Math.random() - 0.5) * 8;
         const home = {
-          x: col * geometry.trayCellW + GAP / 2 + jitterX,
-          y: geometry.trayOffsetY + row * geometry.trayCellH + GAP / 2 + jitterY,
+          x: col * geometry.trayCellW + (geometry.trayCellW - geometry.bboxW * geometry.trayScale) / 2 + jitterX,
+          y:
+            geometry.trayOffsetY +
+            row * geometry.trayCellH +
+            (geometry.trayCellH - geometry.bboxH * geometry.trayScale) / 2 +
+            jitterY,
         };
         return {
           id,

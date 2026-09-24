@@ -33,7 +33,7 @@ function Row({
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: 0.35 }}
-      className={`px-5 py-3 grid grid-cols-[2.2rem_1fr_4.5rem] items-center font-body text-sm border-b border-[var(--color-border)]/15 last:border-b-0 ${
+      className={`px-5 py-3 grid grid-cols-[3.4rem_1fr_4.5rem] items-center font-body text-sm border-b border-[var(--color-border)]/15 last:border-b-0 ${
         mine ? "bg-[var(--color-accent)]/20" : ""
       }`}
     >
@@ -85,7 +85,7 @@ export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="rounded-3xl bg-[var(--color-surface-raised)]/90 backdrop-blur border border-[var(--color-border)]/40 shadow-lg overflow-hidden">
-        <div className="px-5 py-3 border-b border-[var(--color-border)]/30 grid grid-cols-[2.2rem_1fr_4.5rem] text-xs font-semibold text-[var(--color-text-muted)] font-body">
+        <div className="px-5 py-3 border-b border-[var(--color-border)]/30 grid grid-cols-[3.4rem_1fr_4.5rem] text-xs font-semibold text-[var(--color-text-muted)] font-body">
           <span>{t.leaderboard.rank}</span>
           <span>{t.leaderboard.name}</span>
           <span className="text-end">{t.leaderboard.time}</span>
