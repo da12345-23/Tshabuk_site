@@ -73,7 +73,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
       {/* Neuron at the top, beside the logo */}
       <motion.div
         className="absolute pointer-events-none select-none z-20"
-        style={{ width: 128, left: -20, top: 10, willChange: "transform" }}
+        style={{ width: 128, left: -24, top: 10, willChange: "transform" }}
         animate={paused ? undefined : { y: [0, -6, 0], rotate: [-3, 2, -3] }}
         transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -103,7 +103,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
           src="/images/brand/logo-clean-t.png"
           alt=""
           className="mx-auto block"
-          style={{ width: 92, height: 92, objectFit: "contain" }}
+          style={{ width: 120, height: 120, objectFit: "contain" }}
         />
         <p className="font-display text-[19px] font-bold text-[var(--color-secondary)] -mt-1 tracking-wide">
           {t.appName}

@@ -59,7 +59,7 @@ export const dictionaries = {
       tapHint: "اضغط لفتح الدعوة",
       pullHint: "اسحب الدعوة للأعلى، أو اضغط الزر",
       pullButton: "أخرج الدعوة",
-      title: "أنتم جزء من تشابك",
+      title: "أنتم قطعة من تشابك",
       lead: "يسعدنا أن تكونوا جزءًا من «تشابك»",
       bodyLines: [
         "حملة توعوية نسلّط فيها الضوء على الاضطرابات العصبية العضلية لدى الأطفال،",
@@ -129,7 +129,7 @@ export const dictionaries = {
       tapHint: "Tap to open",
       pullHint: "Slide the invite up, or tap the button",
       pullButton: "Pull out",
-      title: "You're part of Tashabuk",
+      title: "You're a piece of Tashabuk",
       lead: "We're delighted to have you as part of Tashabuk,",
       bodyLines: [
         "an awareness campaign shining a light on neuromuscular disorders in children,",

@@ -108,6 +108,21 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
         animate={opened ? { y: 0 } : { y: [0, -5, 0] }}
         transition={opened ? { duration: 0.3 } : { duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
       >
+        {/* Red halo (the logo's own red) around the closed envelope,
+            gently pulsing as a "tap me" hint; fades once it's opened. */}
+        <motion.div
+          className="absolute inset-x-0 bottom-0 pointer-events-none"
+          style={{
+            height: ENVELOPE_H,
+            borderRadius: RADIUS,
+            boxShadow: "0 0 34px 8px rgba(210,58,60,.5)",
+          }}
+          initial={false}
+          animate={opened ? { opacity: 0 } : { opacity: [0.55, 1, 0.55] }}
+          transition={opened ? { duration: 0.4 } : { duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          aria-hidden
+        />
+
         {/* Inside of the envelope -- a touch darker than the outside, as
             the inside of a real envelope is. Also carries the outline and
             drop shadow that separate it from the cream page. */}
@@ -154,7 +169,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
         <div
           className="absolute inset-0 z-10 pointer-events-none"
           style={{
-            clipPath: `polygon(-2000px -2000px, calc(100% + 2000px) -2000px, calc(100% + 2000px) calc(100% - ${ENVELOPE_H}px), 100% calc(100% - ${ENVELOPE_H}px), 100% 100%, 0 100%, 0 calc(100% - ${ENVELOPE_H}px), -2000px calc(100% - ${ENVELOPE_H}px))`,
+            clipPath: `polygon(-2000px -2000px, calc(100% + 2000px) -2000px, calc(100% + 2000px) calc(100% - ${ENVELOPE_H}px), 100% calc(100% - ${ENVELOPE_H}px), 100% calc(100% - ${RADIUS}px), calc(100% - ${RADIUS}px) 100%, ${RADIUS}px 100%, 0 calc(100% - ${RADIUS}px), 0 calc(100% - ${ENVELOPE_H}px), -2000px calc(100% - ${ENVELOPE_H}px))`,
           }}
         >
           <motion.div
@@ -236,7 +251,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
               clipPath: `polygon(0 0, 50% ${POCKET_TIP * 100}%, 100% 0, 100% 100%, 0 100%)`,
               borderRadius: RADIUS,
               background: "linear-gradient(180deg, #fdfcfa 0%, #f4f0e9 100%)",
-              border: "1.5px solid rgba(122,89,54,.3)",
+              border: "1.5px solid #d8cdbf",
             }}
           />
           <svg
