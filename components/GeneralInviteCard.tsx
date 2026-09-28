@@ -58,7 +58,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
   const { t } = useLocale();
 
   return (
-    <div className="relative mx-auto" style={{ width: "min(88vw, 320px)" }}>
+    <div className="relative mx-auto" style={{ width: "min(92vw, 360px)" }}>
       {/* Organic color blobs behind the note, matching the reference art */}
       <Blob color="var(--color-sage-600)" size={140} style={{ top: -18, left: -26, transform: "rotate(-8deg)" }} />
       <Blob color="var(--color-maroon-500)" size={100} style={{ bottom: 40, right: -30, transform: "rotate(10deg)" }} />
@@ -73,7 +73,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
           to the reference art's proportions than the main flow's card. */}
       <motion.div
         className="absolute pointer-events-none select-none z-20"
-        style={{ width: 118, left: -24, top: 30, willChange: "transform" }}
+        style={{ width: 134, left: -20, top: 18, willChange: "transform" }}
         animate={paused ? undefined : { y: [0, -7, 0], rotate: [-3, 2, -3] }}
         transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -87,7 +87,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
       </motion.div>
       <motion.div
         className="absolute pointer-events-none select-none z-20"
-        style={{ width: 92, right: -20, top: "44%", willChange: "transform" }}
+        style={{ width: 108, right: -14, top: 18, willChange: "transform" }}
         animate={paused ? undefined : { y: [0, 8, 0], rotate: [3, -2, 3] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
       >
@@ -114,7 +114,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
           src="/images/brand/logo-clean-t.png"
           alt=""
           className="mx-auto block"
-          style={{ width: 76, height: 76, objectFit: "contain" }}
+          style={{ width: 100, height: 100, objectFit: "contain" }}
         />
         <p className="font-display text-lg font-bold text-[var(--color-secondary)] -mt-1">
           {t.appName}
@@ -124,7 +124,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
           {t.generalInvite.title}
         </h2>
 
-        <p className="font-body text-[13px] leading-relaxed text-[var(--color-text-muted)] mt-3">
+        <p className="font-body text-[14px] leading-relaxed text-[var(--color-text-muted)] mt-3">
           {t.generalInvite.body}
         </p>
       </div>

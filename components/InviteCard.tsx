@@ -32,7 +32,7 @@ function CalendarIcon() {
 export const InviteCard = forwardRef<
   HTMLDivElement,
   { name: string; elapsedMs: number; onRankSettled?: () => void; width?: string }
->(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(90vw, 340px)" }, ref) {
+>(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(92vw, 370px)" }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
@@ -80,7 +80,7 @@ export const InviteCard = forwardRef<
             to cover the card's own text. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 105, left: -30, top: "63%" }}
+          style={{ width: 124, left: -30, top: "63%" }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -97,7 +97,7 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 88, right: -24, top: "64%" }}
+          style={{ width: 104, right: -24, top: "64%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
@@ -124,7 +124,7 @@ export const InviteCard = forwardRef<
             src="/images/brand/logo-clean-t.png"
             alt={t.appName}
             className="mx-auto mb-2 block"
-            style={{ width: 96, height: 96, objectFit: "contain" }}
+            style={{ width: 118, height: 118, objectFit: "contain" }}
           />
 
           <p className="font-display text-sm text-[var(--color-secondary)] tracking-wide">
@@ -134,7 +134,7 @@ export const InviteCard = forwardRef<
             {name}
           </h2>
 
-          <p className="font-body text-[13px] leading-relaxed text-[var(--color-text-muted)] mt-3">
+          <p className="font-body text-[14px] leading-relaxed text-[var(--color-text-muted)] mt-3">
             {t.invite.body}
           </p>
 
