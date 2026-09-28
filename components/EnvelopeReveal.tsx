@@ -8,7 +8,7 @@ import { celebrate } from "@/lib/confetti";
 import { Button } from "./Button";
 import { GeneralInviteCard } from "./GeneralInviteCard";
 
-const ENVELOPE_H = 218;
+const ENVELOPE_H = 240;
 const RADIUS = 12;
 // The front pocket's top edge is a V from the two top corners down to
 // this point in the middle (measured from the top); the flap's tip
@@ -104,7 +104,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
     >
       <motion.div
         className="relative"
-        style={{ width: "min(94vw, 390px)", height: openH, perspective: 1400 }}
+        style={{ width: "min(94vw, 420px)", height: openH, perspective: 1400 }}
         animate={opened ? { y: 0 } : { y: [0, -5, 0] }}
         transition={opened ? { duration: 0.3 } : { duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
       >

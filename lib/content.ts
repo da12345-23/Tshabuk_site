@@ -55,7 +55,10 @@ export const dictionaries = {
       pullHint: "اسحب الدعوة للأعلى، أو اضغط الزر",
       pullButton: "أخرج الدعوة",
       title: "دعوة عامة",
-      body: "يسعدنا دعوتكم للانضمام إلينا في فعالية تشابك، حملة توعوية للتعريف بالاضطرابات العصبية العضلية عند الأطفال. حضوركم يهمنا ويصنع فرقًا حقيقيًا في مسيرة هذه الحملة.",
+      intro: "أحيانًا... المشكلة لا تبدأ بصوتٍ عالٍ، تبدأ بخطوةٍ تأخرت، حركةٍ تغيّرت، أو ضعفٍ لم ننتبه له.",
+      question: "لكن ماذا يحدث عندما ينقطع التشابك؟",
+      body: "في حملة تشابك ندعوكم للتعرّف عن الاضطرابات العصبية العضلية لدى الأطفال، والتي تهدف إلى تعزيز الوعي بالعلامات المبكرة، وربط الأعراض ببعضها، وتشجيع الانتباه إلى التغيرات التي قد تظهر على حركة الطفل وقوته ونموه الحركي.",
+      closing: "فحين ينقطع الاتصال... يبدأ دورنا في إعادة الوصل.",
     },
     leaderboard: {
       title: "لوحة المتصدرين",
@@ -113,7 +116,10 @@ export const dictionaries = {
       pullHint: "Slide the invite up, or tap the button",
       pullButton: "Pull out",
       title: "You're Invited",
-      body: "We'd love for you to join us at Tashabuk, an awareness campaign for neuromuscular disorders in children. Your presence means a great deal and makes a real difference to this cause.",
+      intro: "Sometimes... the problem doesn't begin loudly. It begins with a delayed step, a movement that changed, or a weakness we didn't notice.",
+      question: "But what happens when the connection breaks?",
+      body: "At Tashabuk, we invite you to learn about neuromuscular disorders in children. The campaign aims to raise awareness of the early signs, connect the symptoms together, and encourage attention to changes that may appear in a child's movement, strength, and motor development.",
+      closing: "Because when the connection breaks... our role in reconnecting begins.",
     },
     leaderboard: {
       title: "Leaderboard",
