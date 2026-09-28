@@ -58,7 +58,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
   const { t } = useLocale();
 
   return (
-    <div className="relative mx-auto" style={{ width: "min(92vw, 360px)" }}>
+    <div className="relative mx-auto" style={{ width: "min(94vw, 390px)" }}>
       {/* Organic color blobs behind the note, matching the reference art */}
       <Blob color="var(--color-sage-600)" size={140} style={{ top: -18, left: -26, transform: "rotate(-8deg)" }} />
       <Blob color="var(--color-maroon-500)" size={100} style={{ bottom: 40, right: -30, transform: "rotate(10deg)" }} />
@@ -87,7 +87,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
       </motion.div>
       <motion.div
         className="absolute pointer-events-none select-none z-20"
-        style={{ width: 108, right: -14, top: 18, willChange: "transform" }}
+        style={{ width: 104, right: -12, bottom: -6, willChange: "transform" }}
         animate={paused ? undefined : { y: [0, 8, 0], rotate: [3, -2, 3] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
       >
@@ -102,7 +102,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
 
       {/* Note: dashed-border paper card holding the logo, title and body */}
       <div
-        className="relative rounded-[32px] px-7 pt-9 pb-7 text-center z-10"
+        className="relative rounded-[36px] px-8 pt-14 pb-14 text-center z-10"
         style={{
           background: "var(--color-cream-50)",
           border: "2px dashed color-mix(in srgb, var(--color-wood-500) 55%, transparent)",
@@ -120,17 +120,17 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
           {t.appName}
         </p>
 
-        <h2 className="font-display text-2xl font-bold text-[var(--color-text)] mt-2">
+        <h2 className="font-display text-[26px] font-bold text-[var(--color-text)] mt-5">
           {t.generalInvite.title}
         </h2>
 
-        <p className="font-body text-[14px] leading-relaxed text-[var(--color-text-muted)] mt-3">
+        <p className="font-body text-[14.5px] leading-[1.95] text-[var(--color-text-muted)] mt-6">
           {t.generalInvite.body}
         </p>
       </div>
 
       {/* Location + date, as two side-by-side colored boxes */}
-      <div className="relative z-10 flex gap-2.5 mt-4">
+      <div className="relative z-10 flex gap-3 mt-5" style={{ paddingRight: 80 }}>
         <div
           className="flex-1 flex flex-col items-center gap-1 rounded-2xl px-3 py-3 text-[12px] font-body"
           style={{ background: "color-mix(in srgb, var(--color-sage-500) 22%, var(--color-cream-50))" }}

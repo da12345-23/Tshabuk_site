@@ -171,7 +171,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
-              className="flex flex-col items-center gap-6"
+              className="flex flex-col items-center gap-6 pt-12"
             >
               <InviteCard name={name} elapsedMs={elapsedMs} />
 
@@ -187,7 +187,7 @@ export default function Home() {
                   <InviteCard
                     name={name}
                     elapsedMs={elapsedMs}
-                    width="450px"
+                    width="470px"
                     onRankSettled={() => setRankReady(true)}
                   />
                 </InviteFrame>

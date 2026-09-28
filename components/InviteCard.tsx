@@ -32,7 +32,7 @@ function CalendarIcon() {
 export const InviteCard = forwardRef<
   HTMLDivElement,
   { name: string; elapsedMs: number; onRankSettled?: () => void; width?: string }
->(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(92vw, 370px)" }, ref) {
+>(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(94vw, 390px)" }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
@@ -80,7 +80,7 @@ export const InviteCard = forwardRef<
             to cover the card's own text. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 124, left: -30, top: "63%" }}
+          style={{ width: 124, right: -30, top: 12 }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -97,7 +97,7 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 104, right: -24, top: "64%" }}
+          style={{ width: 104, left: -24, top: "62%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
@@ -112,7 +112,7 @@ export const InviteCard = forwardRef<
 
         {/* Notepad */}
         <div
-          className="relative rounded-t-[28px] rounded-b-[10px] px-7 pt-8 pb-6 text-center"
+          className="relative rounded-t-[32px] rounded-b-[10px] px-8 pt-12 pb-12 text-center"
           style={{
             background: "var(--color-cream-50)",
             border: "1px solid color-mix(in srgb, var(--color-border) 40%, transparent)",
@@ -123,23 +123,23 @@ export const InviteCard = forwardRef<
           <img
             src="/images/brand/logo-clean-t.png"
             alt={t.appName}
-            className="mx-auto mb-2 block"
+            className="mx-auto mb-4 block"
             style={{ width: 118, height: 118, objectFit: "contain" }}
           />
 
           <p className="font-display text-sm text-[var(--color-secondary)] tracking-wide">
             {t.invite.greeting}
           </p>
-          <h2 className="font-display text-2xl font-bold text-[var(--color-text)] mt-1 break-words max-w-full">
+          <h2 className="font-display text-[26px] font-bold text-[var(--color-text)] mt-3 break-words max-w-full">
             {name}
           </h2>
 
-          <p className="font-body text-[14px] leading-relaxed text-[var(--color-text-muted)] mt-3">
+          <p className="font-body text-[14.5px] leading-[1.95] text-[var(--color-text-muted)] mt-6">
             {t.invite.body}
           </p>
 
           {elapsedMs > 0 && (
-            <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
+            <div className="mt-7 flex items-center justify-center gap-2 flex-wrap">
               <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-accent)]/25 px-3 py-1 text-[11px] font-semibold text-[var(--color-text)]">
                 {t.invite.yourTime}: {formatTime(elapsedMs)}
               </div>
@@ -154,7 +154,7 @@ export const InviteCard = forwardRef<
 
         {/* Footer band with the seal + event details */}
         <div
-          className="relative rounded-b-[28px] rounded-t-[10px] pt-7 pb-5 px-6"
+          className="relative rounded-b-[32px] rounded-t-[10px] pt-10 pb-7 px-6"
           style={{
             background:
               "linear-gradient(160deg, var(--color-wood-300) 0%, var(--color-sage-500) 55%, var(--color-wood-500) 100%)",
@@ -172,13 +172,13 @@ export const InviteCard = forwardRef<
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 rounded-xl bg-[var(--color-cream-50)]/90 px-3 py-2 text-[12px] text-[var(--color-text)] font-body">
+          <div className="flex flex-col gap-2.5">
+            <div className="flex items-center gap-2 rounded-xl bg-[var(--color-cream-50)]/90 px-3.5 py-2.5 text-[12.5px] text-[var(--color-text)] font-body">
               <span className="text-[var(--color-secondary)]"><PinIcon /></span>
               <span className="font-semibold text-[var(--color-primary)]">{t.invite.locationLabel}</span>
               <span className="truncate">{t.eventLocation}</span>
             </div>
-            <div className="flex items-center gap-2 rounded-xl bg-[var(--color-cream-50)]/90 px-3 py-2 text-[12px] text-[var(--color-text)] font-body">
+            <div className="flex items-center gap-2 rounded-xl bg-[var(--color-cream-50)]/90 px-3.5 py-2.5 text-[12.5px] text-[var(--color-text)] font-body">
               <span className="text-[var(--color-secondary)]"><CalendarIcon /></span>
               <span className="font-semibold text-[var(--color-primary)]">{t.invite.dateLabel}</span>
               <span className="truncate">{t.eventDates}</span>

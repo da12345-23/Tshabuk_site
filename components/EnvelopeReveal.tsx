@@ -104,7 +104,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
     >
       <motion.div
         className="relative"
-        style={{ width: "min(92vw, 360px)", height: openH, perspective: 1400 }}
+        style={{ width: "min(94vw, 390px)", height: openH, perspective: 1400 }}
         animate={opened ? { y: 0 } : { y: [0, -5, 0] }}
         transition={opened ? { duration: 0.3 } : { duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
       >
