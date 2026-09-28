@@ -268,7 +268,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
           (desktop), and on phones a clean break between the sentences
           instead of a word left dangling at the end of a line. */}
       <p ref={instrRef} className="text-sm leading-relaxed text-[var(--color-text-muted)] font-body text-center px-2">
-        {t.puzzle.instructions.split(/(?<=\.)\s+/).map((sentence, i) => (
+        {t.puzzle.instructions.split(/\n|(?<=\.)\s+/).map((sentence, i) => (
           <span key={i} className="inline-block">
             {i > 0 && " "}
             {sentence}

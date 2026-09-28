@@ -3,13 +3,12 @@
 import { motion } from "motion/react";
 
 /**
- * A four-color halo around an invitation card, in the logo's colors: green
- * top-left, red top-right, blue bottom-left, yellow bottom-right, gently
- * breathing. Sized from the card's own box and extending past every edge,
- * so it reads as a glow around the card rather than a haze hidden behind
- * it. Plain radial gradients animated only by opacity/transform -- no blur
- * filter -- so it stays cheap on phones. Place it as the first child of a
- * `relative isolate` wrapper that is exactly the card's size.
+ * A soft glow that hugs the invitation card's own rounded outline, in the
+ * logo's four colors (red, yellow, blue, green) blending around the edge --
+ * reads as a lit border rather than a cloud of color. A static blurred
+ * layer animated only by opacity (cheap for the compositor). Place it as
+ * the first child of a `relative isolate` wrapper that is exactly the
+ * card's size.
  */
 export function InviteGlow() {
   return (
@@ -17,16 +16,14 @@ export function InviteGlow() {
       aria-hidden
       className="absolute -z-10 pointer-events-none"
       style={{
-        inset: "-60px -48px",
-        background: [
-          "radial-gradient(42% 34% at 16% 14%, rgba(76,168,96,.55), transparent 72%)",
-          "radial-gradient(42% 34% at 84% 14%, rgba(214,64,64,.5), transparent 72%)",
-          "radial-gradient(42% 34% at 16% 86%, rgba(74,163,223,.5), transparent 72%)",
-          "radial-gradient(42% 34% at 84% 86%, rgba(243,194,67,.6), transparent 72%)",
-          "radial-gradient(closest-side, rgba(253,248,239,.5) 70%, transparent 100%)",
-        ].join(", "),
+        inset: -6,
+        borderRadius: 38,
+        background:
+          "conic-gradient(from 0deg, #d64040, #f3c243, #4aa3df, #4ca860, #d64040)",
+        filter: "blur(18px)",
+        willChange: "opacity",
       }}
-      animate={{ opacity: [0.75, 1, 0.75], scale: [0.98, 1.04, 0.98] }}
+      animate={{ opacity: [0.45, 0.75, 0.45] }}
       transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
     />
   );

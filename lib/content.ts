@@ -30,7 +30,7 @@ export const dictionaries = {
     },
     puzzle: {
       title: "رتّب القطع لتكتشف دعوتك",
-      instructions: "دعوتك ناقصها قطعة… كل قطعة تقرّبك أكثر. كمّل شعار تشابك وشوف إيش ينتظرك",
+      instructions: "باقي كم قطعة وتكتمل دعوتك…\nيلا نشوف تقدر تجمع تشابك؟ 🧩",
       timer: "الوقت",
       moves: "عدد المحاولات",
       reset: "إعادة",
@@ -100,7 +100,7 @@ export const dictionaries = {
     },
     puzzle: {
       title: "Piece it together to reveal your invite",
-      instructions: "Your invite is missing a piece… every piece brings you closer. Complete the Tashabuk logo and see what's waiting for you.",
+      instructions: "Just a few pieces until your invite is complete…\nLet's see, can you put Tashabuk together? 🧩",
       timer: "Time",
       moves: "Moves",
       reset: "Reset",
