@@ -50,6 +50,13 @@ export const dictionaries = {
       savingImage: "جارٍ الحفظ...",
       preparingImage: "لحظات...",
     },
+    generalInvite: {
+      tapHint: "اضغط لفتح الدعوة",
+      pullHint: "اسحب الدعوة للأعلى، أو اضغط الزر",
+      pullButton: "أخرج الدعوة",
+      title: "دعوة عامة",
+      body: "يسعدنا دعوتكم للانضمام إلينا في فعالية تشابك، حملة توعوية للتعريف بالاضطرابات العصبية العضلية عند الأطفال. حضوركم يهمنا ويصنع فرقًا حقيقيًا في مسيرة هذه الحملة.",
+    },
     leaderboard: {
       title: "لوحة المتصدرين",
       subtitle: "أسرع من حل الأحجية وحصل على دعوته",
@@ -100,6 +107,13 @@ export const dictionaries = {
       saveImage: "Save as image",
       savingImage: "Saving...",
       preparingImage: "One sec...",
+    },
+    generalInvite: {
+      tapHint: "Tap to open",
+      pullHint: "Slide the invite up, or tap the button",
+      pullButton: "Pull out",
+      title: "You're Invited",
+      body: "We'd love for you to join us at Tashabuk, an awareness campaign for neuromuscular disorders in children. Your presence means a great deal and makes a real difference to this cause.",
     },
     leaderboard: {
       title: "Leaderboard",
