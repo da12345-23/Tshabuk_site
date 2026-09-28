@@ -57,7 +57,7 @@ export function NameEntry({
         <h1 className="font-display text-3xl font-bold text-[var(--color-text)]">
           {t.landing.title}
         </h1>
-        <p className="font-body text-sm text-[var(--color-text-muted)] mt-2">
+        <p className="font-body text-sm leading-relaxed text-[var(--color-text-muted)] mt-2 whitespace-pre-line">
           {t.landing.subtitle}
         </p>
       </div>

@@ -13,7 +13,9 @@ const GAP = 10;
 const SEED = 7;
 const IMAGE_SRC = "/images/puzzle-source.png";
 const PIECE_COUNT = ROWS * COLS;
-const MIN_TRAY_SCALE = 0.65;
+// Floor for tray piece size: below this we'd rather let the page scroll a
+// little than make pieces too small to grab comfortably.
+const MIN_TRAY_SCALE = 0.5;
 const MAX_TRAY_SCALE = 0.85;
 const MAX_TRAY_ROWS = 6;
 
@@ -29,6 +31,8 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   const containerRef = useRef<HTMLDivElement>(null);
   const [availableWidth, setAvailableWidth] = useState<number | null>(null);
   const [viewportH, setViewportH] = useState<number | null>(null);
+  const [stageTop, setStageTop] = useState<number | null>(null);
+  const instrRef = useRef<HTMLParagraphElement>(null);
   const [ready, setReady] = useState(false);
   const [pieces, setPieces] = useState<PieceRuntime[]>([]);
   const [zOrder, setZOrder] = useState<Record<string, number>>({});
@@ -46,9 +50,19 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
   // Measure available width once, so the board/tray size themselves to the
   // actual viewport (phones included) instead of a fixed desktop width.
   useLayoutEffect(() => {
-    if (!containerRef.current) return;
-    setAvailableWidth(containerRef.current.clientWidth);
+    const c = containerRef.current;
+    if (!c) return;
+    setAvailableWidth(c.clientWidth);
     setViewportH(window.innerHeight);
+    // Where the board will start on screen, from the heights of the things
+    // above it (offset-based, so the stage's entry scale animation doesn't
+    // skew it). 72 = the page's top padding + the puzzle stage's own.
+    const instr = instrRef.current;
+    if (instr) {
+      const title = c.previousElementSibling as HTMLElement | null;
+      const header = instr.offsetTop + instr.offsetHeight - c.offsetTop;
+      setStageTop(72 + (title ? title.offsetHeight + 12 : 0) + header + 16);
+    }
   }, []);
 
   // Height-aware too: on a short phone screen a 300px board plus the tray
@@ -81,23 +95,30 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     // "scroll to find the pieces" problem that causes) below the fold.
     const PACK = 0.72;
 
-    // Pick the fewest tray rows (so there's as little scrolling as
-    // possible), then size the pieces to whatever fits that many columns
-    // in the available width -- rather than fixing the piece scale first
-    // and letting the row count (and scroll) fall out wherever.
-    let trayCols = PIECE_COUNT;
-    let trayScale = MIN_TRAY_SCALE;
+    // Height left on screen for the tray, below the board. The tray has
+    // to fit here too -- otherwise the last pieces sit below the fold and
+    // dragging one up to the board means scrolling mid-drag.
+    const trayBudget =
+      // 28px spare: pieces start slightly tilted/jittered, which grows their box.
+      viewportH && stageTop ? viewportH - stageTop - boardHeight - GAP * 2.5 - 28 : null;
+
+    // Try every row count and keep the one giving the biggest pieces that
+    // fit both the width and the height budget.
+    let trayCols = 3;
+    let best = -1;
     for (let rows = 2; rows <= MAX_TRAY_ROWS; rows++) {
       const cols = Math.ceil(PIECE_COUNT / rows);
       // Reserve 28px so the (centered) bboxes of the outer columns, which
       // stick out a little past their cells, stay on screen.
-      const scale = ((effectiveWidth - 28) / cols - GAP) / (bboxW * PACK);
-      if (scale >= MIN_TRAY_SCALE || rows === MAX_TRAY_ROWS) {
+      const byWidth = ((effectiveWidth - 28) / cols - GAP) / (bboxW * PACK);
+      const byHeight = trayBudget ? (trayBudget / rows - GAP) / (bboxH * PACK) : Infinity;
+      const scale = Math.min(byWidth, byHeight, MAX_TRAY_SCALE);
+      if (scale > best) {
+        best = scale;
         trayCols = cols;
-        trayScale = Math.max(MIN_TRAY_SCALE, Math.min(MAX_TRAY_SCALE, scale));
-        break;
       }
     }
+    const trayScale = Math.max(MIN_TRAY_SCALE, best);
 
     const trayCellW = bboxW * trayScale * PACK + GAP;
     const trayCellH = bboxH * trayScale * PACK + GAP;
@@ -121,7 +142,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
       boardOffsetX,
       trayOffsetY,
     };
-  }, [boardWidth, boardHeight, availableWidth]);
+  }, [boardWidth, boardHeight, availableWidth, viewportH, stageTop]);
 
   // Build the puzzle once we know the real available width.
   useEffect(() => {
@@ -243,7 +264,7 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
         </div>
       </div>
 
-      <p className="text-sm text-[var(--color-text-muted)] font-body text-center max-w-xs">
+      <p ref={instrRef} className="text-sm leading-relaxed text-[var(--color-text-muted)] font-body text-center max-w-xs px-2">
         {t.puzzle.instructions}
       </p>
 
