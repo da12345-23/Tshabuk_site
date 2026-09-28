@@ -7,6 +7,7 @@ import { NameEntry } from "@/components/NameEntry";
 import { PuzzleGame } from "@/components/PuzzleGame";
 import { InviteCard } from "@/components/InviteCard";
 import { InviteFrame } from "@/components/InviteFrame";
+import { InviteGlow } from "@/components/InviteGlow";
 import { Button } from "@/components/Button";
 import { LangToggle } from "@/components/LangToggle";
 import { FloatingPieces } from "@/components/FloatingPieces";
@@ -171,9 +172,12 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
-              className="flex flex-col items-center gap-5 pt-10"
+              className="flex flex-col items-center gap-4 pt-8"
             >
-              <InviteCard name={name} elapsedMs={elapsedMs} />
+              <div className="relative isolate w-fit mx-auto">
+                <InviteGlow />
+                <InviteCard name={name} elapsedMs={elapsedMs} />
+              </div>
 
               {/* Hidden (not off-screen -- Next/Image lazy-loading needs it
                   in-viewport) framed copy, used only as the "Save as image"
@@ -193,7 +197,7 @@ export default function Home() {
                 </InviteFrame>
               </div>
 
-              <div className="flex items-center gap-3 flex-wrap justify-center">
+              <div className="flex items-center gap-2.5 flex-wrap justify-center [&_button]:px-5 [&_button]:py-2.5 [&_button]:text-[14px]">
                 <Button
                   variant="secondary"
                   onClick={handleSaveImage}

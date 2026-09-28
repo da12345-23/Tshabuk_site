@@ -53,8 +53,13 @@ export function NameEntry({
         <Image src="/images/brand/logo-clean-t.png" alt={t.appName} fill className="object-contain" priority />
       </motion.div>
 
-      <div>
-        <h1 className="font-display text-3xl font-bold text-[var(--color-text)]">
+      <div className="flex flex-col items-center">
+        {/* One line on every screen: the size scales with the viewport
+            width (capped at the original 30px) instead of wrapping. */}
+        <h1
+          className="font-display font-bold text-[var(--color-text)] whitespace-nowrap"
+          style={{ fontSize: "clamp(18px, calc((100vw - 40px) / 14.5), 30px)" }}
+        >
           {t.landing.title}
         </h1>
         <p className="font-body text-sm leading-relaxed text-[var(--color-text-muted)] mt-2 whitespace-pre-line">

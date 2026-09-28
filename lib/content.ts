@@ -39,7 +39,12 @@ export const dictionaries = {
     },
     invite: {
       greeting: "أنت مدعو/ة يا",
-      body: "يسعدنا دعوتك للانضمام إلينا في فعالية تشابك للتعريف بالاضطرابات العصبية العضلية عند الأطفال. نتشرف بحضورك، فأنت الأقرب لقلبنا",
+      lead: "ماذا لو كانت إشارة صغيرة… تحكي الكثير؟",
+      bodyLines: [
+        "في تشابك نكتشف ما وراء الحركة،",
+        "ونقترب أكثر من عالم الاضطرابات العصبية العضلية لدى الأطفال.",
+      ],
+      closing: "جاهز تتشابك معنا؟",
       dateLabel: "التاريخ",
       locationLabel: "المكان",
       viewLeaderboard: "لوحة المتصدرين",
@@ -104,7 +109,12 @@ export const dictionaries = {
     },
     invite: {
       greeting: "You're invited,",
-      body: "We'd love for you to join us at Tashabuk, an awareness event for neuromuscular disorders in children.",
+      lead: "What if a small sign… says a lot?",
+      bodyLines: [
+        "At Tashabuk, we discover what lies behind movement,",
+        "and come closer to the world of neuromuscular disorders in children.",
+      ],
+      closing: "Ready to connect with us?",
       dateLabel: "Date",
       locationLabel: "Location",
       viewLeaderboard: "Leaderboard",

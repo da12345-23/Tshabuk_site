@@ -99,8 +99,8 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     // to fit here too -- otherwise the last pieces sit below the fold and
     // dragging one up to the board means scrolling mid-drag.
     const trayBudget =
-      // 28px spare: pieces start slightly tilted/jittered, which grows their box.
-      viewportH && stageTop ? viewportH - stageTop - boardHeight - GAP * 2.5 - 28 : null;
+      // 38px spare: pieces start slightly tilted/jittered, which grows their box.
+      viewportH && stageTop ? viewportH - stageTop - boardHeight - GAP * 2.5 - 38 : null;
 
     // Try every row count and keep the one giving the biggest pieces that
     // fit both the width and the height budget.
@@ -108,9 +108,9 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
     let best = -1;
     for (let rows = 2; rows <= MAX_TRAY_ROWS; rows++) {
       const cols = Math.ceil(PIECE_COUNT / rows);
-      // Reserve 28px so the (centered) bboxes of the outer columns, which
-      // stick out a little past their cells, stay on screen.
-      const byWidth = ((effectiveWidth - 28) / cols - GAP) / (bboxW * PACK);
+      // Reserve 44px so the (centered, slightly tilted) bboxes of the
+      // outer columns, which stick out past their cells, stay on screen.
+      const byWidth = ((effectiveWidth - 44) / cols - GAP) / (bboxW * PACK);
       const byHeight = trayBudget ? (trayBudget / rows - GAP) / (bboxH * PACK) : Infinity;
       const scale = Math.min(byWidth, byHeight, MAX_TRAY_SCALE);
       if (scale > best) {
@@ -264,8 +264,16 @@ export function PuzzleGame({ onSolved }: { onSolved: (elapsedMs: number) => void
         </div>
       </div>
 
-      <p ref={instrRef} className="text-sm leading-relaxed text-[var(--color-text-muted)] font-body text-center max-w-xs px-2">
-        {t.puzzle.instructions}
+      {/* Each sentence is kept whole: one line where there's room
+          (desktop), and on phones a clean break between the sentences
+          instead of a word left dangling at the end of a line. */}
+      <p ref={instrRef} className="text-sm leading-relaxed text-[var(--color-text-muted)] font-body text-center px-2">
+        {t.puzzle.instructions.split(/(?<=\.)\s+/).map((sentence, i) => (
+          <span key={i} className="inline-block">
+            {i > 0 && " "}
+            {sentence}
+          </span>
+        ))}
       </p>
 
       {availableWidth !== null && (

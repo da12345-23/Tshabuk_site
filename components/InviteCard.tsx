@@ -32,7 +32,7 @@ function CalendarIcon() {
 export const InviteCard = forwardRef<
   HTMLDivElement,
   { name: string; elapsedMs: number; onRankSettled?: () => void; width?: string }
->(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(94vw, 390px)" }, ref) {
+>(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(84vw, 370px)" }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
@@ -80,7 +80,7 @@ export const InviteCard = forwardRef<
             to cover the card's own text. */}
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 124, right: -30, top: 12 }}
+          style={{ width: 112, right: -22, top: 12 }}
           animate={{ y: [0, -7, 0], rotate: [-3, 2, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -97,7 +97,7 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 104, left: -24, top: "62%" }}
+          style={{ width: 94, left: -20, top: "62%" }}
           animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
@@ -112,7 +112,7 @@ export const InviteCard = forwardRef<
 
         {/* Notepad */}
         <div
-          className="relative rounded-t-[32px] rounded-b-[10px] px-7 pt-9 pb-7 text-center"
+          className="relative rounded-t-[32px] rounded-b-[10px] px-7 pt-7 pb-6 text-center"
           style={{
             background: "var(--color-cream-50)",
             border: "1px solid color-mix(in srgb, var(--color-border) 40%, transparent)",
@@ -124,7 +124,7 @@ export const InviteCard = forwardRef<
             src="/images/brand/logo-clean-t.png"
             alt={t.appName}
             className="mx-auto mb-2 block"
-            style={{ width: 104, height: 104, objectFit: "contain" }}
+            style={{ width: 90, height: 90, objectFit: "contain" }}
           />
 
           <p className="font-display text-sm text-[var(--color-secondary)] tracking-wide">
@@ -134,9 +134,18 @@ export const InviteCard = forwardRef<
             {name}
           </h2>
 
-          <p className="font-body text-[14.5px] leading-[1.8] text-[var(--color-text-muted)] mt-3">
-            {t.invite.body}
-          </p>
+          <div className="font-body text-[14px] leading-[1.7] text-[var(--color-text-muted)] mt-3 flex flex-col gap-2">
+            <p className="font-display text-[15.5px] font-bold text-[var(--color-secondary)]">{t.invite.lead}</p>
+            <p>
+              {t.invite.bodyLines.map((line, i) => (
+                <span key={i}>
+                  {i > 0 && <br />}
+                  {line}
+                </span>
+              ))}
+            </p>
+            <p className="font-semibold text-[var(--color-text)]">{t.invite.closing}</p>
+          </div>
 
           {elapsedMs > 0 && (
             <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">

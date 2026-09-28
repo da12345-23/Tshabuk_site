@@ -7,6 +7,7 @@ import { useLocale } from "@/lib/locale-context";
 import { celebrate } from "@/lib/confetti";
 import { Button } from "./Button";
 import { GeneralInviteCard } from "./GeneralInviteCard";
+import { InviteGlow } from "./InviteGlow";
 
 const ENVELOPE_H = 224;
 const RADIUS = 12;
@@ -243,6 +244,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
             className="absolute inset-0 w-full h-full"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
+            style={{ clipPath: `inset(0 round ${RADIUS}px)` }}
           >
             <path
               d={`M1 99 L50 ${POCKET_TIP * 100 + 14} L99 99`}
@@ -271,7 +273,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/brand/piece-mustard-t.png"
+            src="/images/brand/piece-maroon-t.png"
             alt=""
             style={{ width: 28, height: 28, objectFit: "contain" }}
           />
@@ -380,8 +382,10 @@ function Spotlight({ from }: { from: DOMRect | null }) {
             height: fit ? fit.h * fit.scale : undefined,
             visibility: fit ? "visible" : "hidden",
             willChange: "transform",
+            isolation: "isolate",
           }}
         >
+          <InviteGlow />
           <div
             ref={innerRef}
             style={
