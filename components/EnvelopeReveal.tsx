@@ -8,7 +8,7 @@ import { celebrate } from "@/lib/confetti";
 import { Button } from "./Button";
 import { GeneralInviteCard } from "./GeneralInviteCard";
 
-const ENVELOPE_H = 240;
+const ENVELOPE_H = 224;
 const RADIUS = 12;
 // The front pocket's top edge is a V from the two top corners down to
 // this point in the middle (measured from the top); the flap's tip
@@ -104,7 +104,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
     >
       <motion.div
         className="relative"
-        style={{ width: "min(94vw, 420px)", height: openH, perspective: 1400 }}
+        style={{ width: "min(92vw, 380px)", height: openH, perspective: 1400 }}
         animate={opened ? { y: 0 } : { y: [0, -5, 0] }}
         transition={opened ? { duration: 0.3 } : { duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -168,6 +168,11 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
               opacity: stage === "rest" ? 0 : 1,
               touchAction: stage === "peek" ? "none" : "auto",
               cursor: stage === "peek" ? "grab" : "default",
+              // Pulling must never turn into text selection or, on iPhone,
+              // the long-press "Save Image" menu.
+              userSelect: stage === "peek" ? "none" : undefined,
+              WebkitUserSelect: stage === "peek" ? "none" : undefined,
+              WebkitTouchCallout: stage === "peek" ? "none" : undefined,
             }}
             drag={stage === "peek" ? "y" : false}
             // Absolute y range (motion-value units), from fully clear of
@@ -308,26 +313,48 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
 
 /**
  * The fully-out invitation, brought to the middle of the screen over a
- * blurred page. The card flies there from exactly where it left the
- * envelope (a manual FLIP: measure both boxes, start at the offset,
- * spring to 0), so it reads as one continuous motion. Portaled to <body>
- * so no transformed ancestor can turn `position: fixed` into
- * "fixed to that ancestor".
+ * blurred page -- always shown whole: if the card is taller (or wider)
+ * than the screen it's scaled down evenly to fit, never cut off or
+ * scrolled. It flies there from exactly where it left the envelope (a
+ * manual FLIP: measure both boxes, start at the offset and size, spring
+ * into place), so it reads as one continuous motion. Portaled to <body>
+ * so no transformed ancestor can turn `position: fixed` into "fixed to
+ * that ancestor".
  */
 function Spotlight({ from }: { from: DOMRect | null }) {
   const [scope, animateEl] = useAnimate<HTMLDivElement>();
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState<{ w: number; h: number; scale: number } | null>(null);
 
+  // Phase 1: measure the card's natural size and work out the scale that
+  // fits it on screen (with room for the paperclip/mascot overhangs).
+  useLayoutEffect(() => {
+    const inner = innerRef.current;
+    if (!inner || fit) return;
+    const w = inner.offsetWidth;
+    const h = inner.offsetHeight;
+    // 56px top strip is kept clear for the fixed language button.
+    const scale = Math.min(1, (window.innerHeight - 72) / h, (window.innerWidth - 24) / w);
+    setFit({ w, h, scale });
+  }, [fit]);
+
+  // Phase 2 (still before first paint): fly in from the envelope.
   useLayoutEffect(() => {
     const el = scope.current;
-    if (!el || !from) return;
+    if (!el || !from || !fit) return;
     const to = el.getBoundingClientRect();
+    const s0 = from.width / to.width;
     const dx = from.left - to.left;
     const dy = from.top - to.top;
-    // Set before first paint so it never flashes at the centered spot.
-    el.style.transform = `translate(${dx}px, ${dy}px)`;
-    animateEl(el, { x: [dx, 0], y: [dy, 0] }, { type: "spring", stiffness: 110, damping: 18 });
+    el.style.transformOrigin = "0 0";
+    el.style.transform = `translate(${dx}px, ${dy}px) scale(${s0})`;
+    animateEl(
+      el,
+      { x: [dx, 0], y: [dy, 0], scale: [s0, 1] },
+      { type: "spring", stiffness: 110, damping: 18 }
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fit]);
 
   return createPortal(
     <div className="fixed inset-0 z-40">
@@ -342,9 +369,27 @@ function Spotlight({ from }: { from: DOMRect | null }) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
       />
-      <div className="absolute inset-0 overflow-y-auto overscroll-contain">
-        <div className="min-h-full flex items-center justify-center px-4 py-16">
-          <div ref={scope} style={{ willChange: "transform" }}>
+      <div className="absolute inset-0 flex items-center justify-center overflow-hidden pt-14 pb-4">
+        {/* Outer box is sized to the *scaled* card so centering is exact;
+            the card inside keeps its natural layout and is scaled to fit. */}
+        <div
+          ref={scope}
+          style={{
+            position: "relative",
+            width: fit ? fit.w * fit.scale : undefined,
+            height: fit ? fit.h * fit.scale : undefined,
+            visibility: fit ? "visible" : "hidden",
+            willChange: "transform",
+          }}
+        >
+          <div
+            ref={innerRef}
+            style={
+              fit
+                ? { position: "absolute", top: 0, left: 0, width: fit.w, transform: `scale(${fit.scale})`, transformOrigin: "0 0" }
+                : undefined
+            }
+          >
             <GeneralInviteCard />
           </div>
         </div>

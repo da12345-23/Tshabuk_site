@@ -48,7 +48,7 @@ export function NameEntry({
       <motion.div
         animate={{ rotate: [0, -6, 6, -4, 0], y: [0, -6, 0] }}
         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-        className="w-24 h-24 relative drop-shadow-lg"
+        className="w-40 h-40 relative drop-shadow-lg"
       >
         <Image src="/images/brand/logo-clean-t.png" alt={t.appName} fill className="object-contain" priority />
       </motion.div>

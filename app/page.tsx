@@ -171,7 +171,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
-              className="flex flex-col items-center gap-6 pt-12"
+              className="flex flex-col items-center gap-5 pt-10"
             >
               <InviteCard name={name} elapsedMs={elapsedMs} />
 
