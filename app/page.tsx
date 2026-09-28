@@ -8,6 +8,7 @@ import { PuzzleGame } from "@/components/PuzzleGame";
 import { InviteCard } from "@/components/InviteCard";
 import { InviteFrame } from "@/components/InviteFrame";
 import { InviteGlow } from "@/components/InviteGlow";
+import { FitToScreen } from "@/components/FitToScreen";
 import { Button } from "@/components/Button";
 import { LangToggle } from "@/components/LangToggle";
 import { FloatingPieces } from "@/components/FloatingPieces";
@@ -172,30 +173,17 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
-              className="flex flex-col items-center gap-4 pt-8"
+              className="flex flex-col items-center pt-8"
             >
+              {/* Card + buttons always seen whole: scaled down evenly on
+                  screens too short for them (88 = page padding + top gap). */}
+              <FitToScreen reserve={88}>
+              <div className="flex flex-col items-center gap-4">
               <div className="relative isolate w-fit mx-auto">
                 <InviteGlow />
                 <InviteCard name={name} elapsedMs={elapsedMs} />
               </div>
 
-              {/* Hidden (not off-screen -- Next/Image lazy-loading needs it
-                  in-viewport) framed copy, used only as the "Save as image"
-                  export target. This decorated background never shows on
-                  the page itself, only in the saved photo. */}
-              <div
-                style={{ position: "absolute", top: 0, left: 0, opacity: 0, pointerEvents: "none", zIndex: -1 }}
-                aria-hidden
-              >
-                <InviteFrame ref={cardRef} onReady={() => setFrameReady(true)}>
-                  <InviteCard
-                    name={name}
-                    elapsedMs={elapsedMs}
-                    width="470px"
-                    onRankSettled={() => setRankReady(true)}
-                  />
-                </InviteFrame>
-              </div>
 
               <div className="flex items-center gap-2.5 flex-wrap justify-center [&_button]:px-5 [&_button]:py-2.5 [&_button]:text-[14px]">
                 <Button
@@ -228,6 +216,29 @@ export default function Home() {
                 >
                   {t.invite.playAgain}
                 </Button>
+              </div>
+              </div>
+              </FitToScreen>
+
+              {/* Hidden (not off-screen -- Next/Image lazy-loading needs it
+                  in-viewport) framed copy, used only as the "Save as image"
+                  export target. This decorated background never shows on
+                  the page itself, only in the saved photo. */}
+              <div
+                // Pinned to the screen and clipped, so this invisible copy never
+                // adds scroll space; the export clones the node itself, so
+                // the clipping doesn't affect the saved photo.
+                style={{ position: "fixed", inset: 0, overflow: "hidden", opacity: 0, pointerEvents: "none", zIndex: -1 }}
+                aria-hidden
+              >
+                <InviteFrame ref={cardRef} onReady={() => setFrameReady(true)}>
+                  <InviteCard
+                    name={name}
+                    elapsedMs={elapsedMs}
+                    width="470px"
+                    onRankSettled={() => setRankReady(true)}
+                  />
+                </InviteFrame>
               </div>
             </motion.div>
           )}

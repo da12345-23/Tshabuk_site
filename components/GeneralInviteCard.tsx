@@ -59,7 +59,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
   const g = t.generalInvite;
 
   return (
-    <div className="relative mx-auto" style={{ width: "min(92vw, 380px)" }}>
+    <div className="relative mx-auto" style={{ width: "min(84vw, 370px)" }}>
       {/* Organic color blobs behind the note, matching the reference art */}
       <Blob color="var(--color-sage-600)" size={150} style={{ top: -20, left: -28, transform: "rotate(-8deg)" }} />
       <Blob color="var(--color-maroon-500)" size={110} style={{ top: "40%", right: -32, transform: "rotate(10deg)" }} />
@@ -93,7 +93,8 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
         style={{
           background: "var(--color-cream-50)",
           border: "2px dashed color-mix(in srgb, var(--color-wood-500) 55%, transparent)",
-          boxShadow: "0 12px 24px rgba(43,35,32,.16)",
+          boxShadow:
+            "0 10px 22px rgba(43,35,32,.12), -12px -10px 34px rgba(74,163,223,.42), 12px 12px 34px rgba(243,194,67,.5)",
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -148,7 +149,10 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
       <div className="relative z-10 flex gap-2.5 mt-4" style={{ paddingRight: 86 }}>
         <div
           className="flex-1 flex flex-col items-center gap-1 rounded-3xl px-3 py-3 text-[13.5px] font-body"
-          style={{ background: "color-mix(in srgb, var(--color-maroon-500) 22%, var(--color-cream-50))" }}
+          style={{
+            background: "color-mix(in srgb, var(--color-maroon-500) 22%, var(--color-cream-50))",
+            boxShadow: "0 0 22px 3px rgba(214,64,64,.38)",
+          }}
         >
           <span className="text-[var(--color-secondary)]"><CalendarIcon /></span>
           <span className="font-semibold text-[var(--color-text)]">{t.invite.dateLabel}</span>
@@ -156,7 +160,10 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
         </div>
         <div
           className="flex-1 flex flex-col items-center gap-1 rounded-3xl px-3 py-3 text-[13.5px] font-body"
-          style={{ background: "color-mix(in srgb, var(--color-sage-500) 22%, var(--color-cream-50))" }}
+          style={{
+            background: "color-mix(in srgb, var(--color-sage-500) 22%, var(--color-cream-50))",
+            boxShadow: "0 0 22px 3px rgba(76,168,96,.4)",
+          }}
         >
           <span className="text-[var(--color-sage-600)]"><PinIcon /></span>
           <span className="font-semibold text-[var(--color-text)]">{t.invite.locationLabel}</span>

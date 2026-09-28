@@ -7,7 +7,6 @@ import { useLocale } from "@/lib/locale-context";
 import { celebrate } from "@/lib/confetti";
 import { Button } from "./Button";
 import { GeneralInviteCard } from "./GeneralInviteCard";
-import { InviteGlow } from "./InviteGlow";
 
 const ENVELOPE_H = 224;
 const RADIUS = 12;
@@ -105,7 +104,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
     >
       <motion.div
         className="relative"
-        style={{ width: "min(92vw, 380px)", height: openH, perspective: 1400 }}
+        style={{ width: "min(84vw, 370px)", height: openH, perspective: 1400 }}
         animate={opened ? { y: 0 } : { y: [0, -5, 0] }}
         transition={opened ? { duration: 0.3 } : { duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -336,7 +335,7 @@ function Spotlight({ from }: { from: DOMRect | null }) {
     const w = inner.offsetWidth;
     const h = inner.offsetHeight;
     // 56px top strip is kept clear for the fixed language button.
-    const scale = Math.min(1, (window.innerHeight - 72) / h, (window.innerWidth - 24) / w);
+    const scale = Math.min(1, (window.innerHeight - 72) / h, (window.innerWidth - 64) / w);
     setFit({ w, h, scale });
   }, [fit]);
 
@@ -385,7 +384,6 @@ function Spotlight({ from }: { from: DOMRect | null }) {
             isolation: "isolate",
           }}
         >
-          <InviteGlow />
           <div
             ref={innerRef}
             style={
