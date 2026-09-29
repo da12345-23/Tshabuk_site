@@ -10,6 +10,7 @@ import { GeneralInviteCard } from "./GeneralInviteCard";
 
 const ENVELOPE_H = 224;
 const RADIUS = 12;
+const CLIP_INSET = 3;
 // The front pocket's top edge is a V from the two top corners down to
 // this point in the middle (measured from the top); the flap's tip
 // reaches a little lower, overlapping it the way a real flap does.
@@ -165,11 +166,13 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
         </motion.div>
 
         {/* Card layer, clipped to the envelope's outline below its top edge
-            (a letter can't stick out through the sides). */}
+            (a letter can't stick out through the sides). Inset a few px
+            inside the pocket, so the card never lines up with the pocket's
+            soft anti-aliased edge and peeks through as a faint line. */}
         <div
           className="absolute inset-0 z-10 pointer-events-none"
           style={{
-            clipPath: `polygon(-2000px -2000px, calc(100% + 2000px) -2000px, calc(100% + 2000px) calc(100% - ${ENVELOPE_H}px), 100% calc(100% - ${ENVELOPE_H}px), 100% calc(100% - ${RADIUS}px), calc(100% - ${RADIUS}px) 100%, ${RADIUS}px 100%, 0 calc(100% - ${RADIUS}px), 0 calc(100% - ${ENVELOPE_H}px), -2000px calc(100% - ${ENVELOPE_H}px))`,
+            clipPath: `polygon(-2000px -2000px, calc(100% + 2000px) -2000px, calc(100% + 2000px) calc(100% - ${ENVELOPE_H}px), calc(100% - ${CLIP_INSET}px) calc(100% - ${ENVELOPE_H}px), calc(100% - ${CLIP_INSET}px) calc(100% - ${RADIUS + CLIP_INSET}px), calc(100% - ${RADIUS + CLIP_INSET}px) calc(100% - ${CLIP_INSET}px), ${RADIUS + CLIP_INSET}px calc(100% - ${CLIP_INSET}px), ${CLIP_INSET}px calc(100% - ${RADIUS + CLIP_INSET}px), ${CLIP_INSET}px calc(100% - ${ENVELOPE_H}px), -2000px calc(100% - ${ENVELOPE_H}px))`,
           }}
         >
           <motion.div
