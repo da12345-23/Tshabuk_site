@@ -6,7 +6,7 @@ import { animate, motion, useAnimate, useMotionValue } from "motion/react";
 import { useLocale } from "@/lib/locale-context";
 import { celebrate } from "@/lib/confetti";
 import { Button } from "./Button";
-import { GeneralInviteCard } from "./GeneralInviteCard";
+import { GeneralInviteCard, type InviteVariant } from "./GeneralInviteCard";
 
 const ENVELOPE_H = 224;
 const RADIUS = 12;
@@ -37,7 +37,13 @@ type Stage = "closed" | "peek" | "out" | "rest";
  * the envelope's outline below its top edge, so nothing of it (mascots
  * included) can poke out through the envelope's sides.
  */
-export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
+export function EnvelopeReveal({
+  onSpotlight,
+  variant = "general",
+}: {
+  onSpotlight?: () => void;
+  variant?: InviteVariant;
+}) {
   const { t } = useLocale();
   const [stage, setStage] = useState<Stage>("closed");
   const cardRef = useRef<HTMLDivElement>(null);
@@ -212,7 +218,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
               }
             }}
           >
-            <GeneralInviteCard paused={stage === "rest"} />
+            <GeneralInviteCard paused={stage === "rest"} variant={variant} />
 
             {/* "Pull me up" cue: bouncing chevrons above the peeking edge,
                 only while it's waiting to be pulled. */}
@@ -325,7 +331,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
         )}
       </div>
 
-      {stage === "rest" && <Spotlight from={fromRect} />}
+      {stage === "rest" && <Spotlight from={fromRect} variant={variant} />}
     </motion.div>
   );
 }
@@ -340,7 +346,7 @@ export function EnvelopeReveal({ onSpotlight }: { onSpotlight?: () => void }) {
  * so no transformed ancestor can turn `position: fixed` into "fixed to
  * that ancestor".
  */
-function Spotlight({ from }: { from: DOMRect | null }) {
+function Spotlight({ from, variant }: { from: DOMRect | null; variant: InviteVariant }) {
   const [scope, animateEl] = useAnimate<HTMLDivElement>();
   const innerRef = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState<{ w: number; h: number; scale: number } | null>(null);
@@ -410,7 +416,7 @@ function Spotlight({ from }: { from: DOMRect | null }) {
                 : undefined
             }
           >
-            <GeneralInviteCard />
+            <GeneralInviteCard variant={variant} />
           </div>
         </div>
       </div>

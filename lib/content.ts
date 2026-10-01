@@ -69,6 +69,19 @@ export const dictionaries = {
       eventDate: "٩ أكتوبر ٢٠٢٦",
       eventLocation: "سيتم الإعلان عنه قريبًا",
     },
+    // The parents' invitation at /envelope2 -- same card, its own text.
+    parentsInvite: {
+      title: "إلى كل أمٍ وأب…",
+      lead: "لأنكم أول من يلاحظ، وأول من يطمئن، وأول من يحمل الأمل لأطفاله… ولأن أجمل تشابك هو تشابك الأيدي التي لا تترك بعضها، والقلوب التي تحتضن أبناءها في كل خطوة",
+      bodyLines: [
+        "ندعوكم لحضور حملة تشابك، لنتعرّف معًا على الاضطرابات العصبية العضلية لدى الأطفال، ونكتشف أهم علاماتها، ونتشارك الوعي الذي قد يصنع فرقًا في رحلة أطفالنا",
+      ],
+      closing: "بانتظاركم بكل محبة.",
+      eventDate: "٨ أكتوبر ٢٠٢٦",
+      // Two lines on purpose (the box is too narrow for one): the line
+      // break stands in for the dash in «المبنى التعليمي – كاش».
+      eventLocation: "المبنى التعليمي\nكاش",
+    },
     leaderboard: {
       title: "لوحة المتصدرين",
       subtitle: "أسرع من حل الأحجية وحصل على دعوته",
@@ -138,6 +151,16 @@ export const dictionaries = {
       closing: "Your presence completes the picture 🧩",
       eventDate: "October 9, 2026",
       eventLocation: "To be announced soon",
+    },
+    parentsInvite: {
+      title: "To every mother and father…",
+      lead: "Because you are the first to notice, the first to reassure, and the first to carry hope for your children… and because the most beautiful Tashabuk is hands that never let go of each other, and hearts that hold their children close at every step",
+      bodyLines: [
+        "We invite you to the Tashabuk campaign, to learn together about neuromuscular disorders in children, discover their most important signs, and share the awareness that can make a difference in our children's journey",
+      ],
+      closing: "Awaiting you with love.",
+      eventDate: "October 8, 2026",
+      eventLocation: "Educational Building\nKASH",
     },
     leaderboard: {
       title: "Leaderboard",

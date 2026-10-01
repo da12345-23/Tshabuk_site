@@ -54,9 +54,19 @@ function Blob({ color, size, style }: { color: string; size: number; style: Reac
  * fold, and the date/location boxes. Kept compact enough to see whole on
  * a phone screen.
  */
-export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
+export type InviteVariant = "general" | "parents";
+
+export function GeneralInviteCard({
+  paused = false,
+  variant = "general",
+}: {
+  paused?: boolean;
+  /** Which invitation text to show: /envelope's general one, or the
+   *  parents' one at /envelope2. Everything else is the same card. */
+  variant?: InviteVariant;
+}) {
   const { t } = useLocale();
-  const g = t.generalInvite;
+  const g = variant === "parents" ? t.parentsInvite : t.generalInvite;
 
   return (
     <div className="relative mx-auto" style={{ width: "min(84vw, 370px)" }}>
@@ -113,7 +123,14 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
           {g.title}
         </h2>
 
-        <div className="font-body text-[15px] leading-[1.85] text-[var(--color-text-muted)] mt-4 flex flex-col gap-3">
+        {/* The parents' text is about twice as long, so it's set a touch
+            tighter -- otherwise the card is shrunk to fit a phone screen
+            and the words get too small to read. */}
+        <div
+          className={`font-body text-[var(--color-text-muted)] mt-4 flex flex-col ${
+            variant === "parents" ? "text-[14px] leading-[1.7] gap-2.5" : "text-[15px] leading-[1.85] gap-3"
+          }`}
+        >
           <p className="font-semibold text-[var(--color-text)]">{g.lead}</p>
           <p>
             {g.bodyLines.map((line, i) => (
@@ -167,7 +184,7 @@ export function GeneralInviteCard({ paused = false }: { paused?: boolean }) {
         >
           <span className="text-[var(--color-sage-600)]"><PinIcon /></span>
           <span className="font-semibold text-[var(--color-text)]">{t.invite.locationLabel}</span>
-          <span className="text-[var(--color-text-muted)] text-center leading-snug">{g.eventLocation}</span>
+          <span className="text-[var(--color-text-muted)] text-center leading-snug whitespace-pre-line">{g.eventLocation}</span>
         </div>
       </div>
 
