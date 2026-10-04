@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useLocale } from "@/lib/locale-context";
-import { fetchLeaderboard, type LeaderboardEntry } from "@/lib/leaderboard-client";
+import { fetchLeaderboard, fetchMine, type LeaderboardEntry } from "@/lib/leaderboard-client";
 
 function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
@@ -13,7 +13,7 @@ function formatTime(ms: number) {
 }
 
 const MEDAL = ["🥇", "🥈", "🥉"];
-const TOP_N = 10;
+const TOP_N = 50;
 
 function Row({
   entry,
@@ -64,11 +64,17 @@ export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
     }
   }, [highlightId]);
 
+  const [below, setBelow] = useState<{ entry: LeaderboardEntry; rank: number } | null>(null);
+
   useEffect(() => {
     let cancelled = false;
     async function load() {
       const data = await fetchLeaderboard();
-      if (!cancelled) setEntries(data);
+      if (cancelled) return;
+      setEntries(data);
+      // The guest's own row, when they're below the top 50 shown.
+      const outside = mine && !data.some((e) => e.id === mine) ? await fetchMine(mine) : null;
+      if (!cancelled) setBelow(outside);
     }
     load();
     const interval = window.setInterval(load, 4000);
@@ -76,11 +82,10 @@ export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
       cancelled = true;
       window.clearInterval(interval);
     };
-  }, []);
+  }, [mine]);
 
   const topEntries = entries?.slice(0, TOP_N) ?? [];
-  const myIndex = entries?.findIndex((e) => e.id === mine) ?? -1;
-  const myEntry = myIndex >= TOP_N ? entries?.[myIndex] : undefined;
+  const myEntry = below && below.rank > TOP_N ? below.entry : undefined;
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -113,7 +118,7 @@ export function Leaderboard({ highlightId }: { highlightId?: string | null }) {
               &bull; &bull; &bull;
             </div>
           )}
-          {myEntry && <Row key={myEntry.id} entry={myEntry} rank={myIndex + 1} mine delay={0} />}
+          {myEntry && <Row key={myEntry.id} entry={myEntry} rank={below!.rank} mine delay={0} />}
         </AnimatePresence>
       </div>
     </div>

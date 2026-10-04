@@ -27,6 +27,9 @@ export default function Home() {
   const [frameReady, setFrameReady] = useState(false);
   const [rankReady, setRankReady] = useState(false);
   const [prefilledName, setPrefilledName] = useState("");
+  // The guest's saved leaderboard entry, for their rank on the invite:
+  // undefined while the score is still being saved, null if there's none.
+  const [entryId, setEntryId] = useState<string | null | undefined>(undefined);
   const cardRef = useRef<HTMLDivElement>(null);
 
   // A personalized invite link can carry ?name=<guest name> to prefill the
@@ -58,6 +61,7 @@ export default function Home() {
         if (parsed?.name) {
           setName(parsed.name);
           setElapsedMs(parsed.elapsedMs ?? 0);
+          setEntryId(window.sessionStorage.getItem("tashabuk-last-entry"));
           setStage("reveal");
           setFrameReady(false);
           setRankReady(false);
@@ -105,15 +109,18 @@ export default function Home() {
   async function handleSolved(elapsed: number) {
     celebrate();
     setElapsedMs(elapsed);
+    setEntryId(undefined);
     setStage("reveal");
     setFrameReady(false);
     setRankReady(false);
     try {
       window.sessionStorage.setItem("tashabuk-invite", JSON.stringify({ name, elapsedMs: elapsed }));
+      // Drop the previous play's entry, so it can't be mistaken for this one.
+      window.sessionStorage.removeItem("tashabuk-last-entry");
     } catch {
       // ignore
     }
-    const entry = await submitScore(name, elapsed, locale);
+    const entry = await submitScore(name, elapsed, locale).catch(() => null);
     if (entry) {
       try {
         window.sessionStorage.setItem("tashabuk-last-entry", entry.id);
@@ -121,6 +128,7 @@ export default function Home() {
         // ignore
       }
     }
+    setEntryId(entry?.id ?? null);
   }
 
   return (
@@ -181,7 +189,7 @@ export default function Home() {
               <div className="flex flex-col items-center gap-4">
               <div className="relative isolate w-fit mx-auto">
                 <InviteGlow />
-                <InviteCard name={name} elapsedMs={elapsedMs} />
+                <InviteCard name={name} elapsedMs={elapsedMs} entryId={entryId} />
               </div>
 
 
@@ -210,6 +218,7 @@ export default function Home() {
                       // ignore
                     }
                     setStage("landing");
+                    setEntryId(undefined);
                     setName("");
                     setElapsedMs(0);
                   }}
@@ -235,6 +244,7 @@ export default function Home() {
                   <InviteCard
                     name={name}
                     elapsedMs={elapsedMs}
+                    entryId={entryId}
                     width="470px"
                     onRankSettled={() => setRankReady(true)}
                   />

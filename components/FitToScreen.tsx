@@ -35,10 +35,17 @@ export function FitToScreen({ reserve, children }: { reserve: number; children: 
   const scaled = box !== null && scale < 1;
 
   return (
-    <div style={scaled ? { width: box.w * scale, height: box.h * scale } : undefined}>
+    <div style={scaled ? { position: "relative", width: box.w * scale, height: box.h * scale } : undefined}>
+      {/* Pinned to the top-left corner it scales from. Left in the normal
+          flow, an RTL (Arabic) page lines it up from the right instead,
+          and the shrink then pulled the whole invite off-centre. */}
       <div
         ref={innerRef}
-        style={scaled ? { width: box.w, transform: `scale(${scale})`, transformOrigin: "top left" } : undefined}
+        style={
+          scaled
+            ? { position: "absolute", top: 0, left: 0, width: box.w, transform: `scale(${scale})`, transformOrigin: "top left" }
+            : undefined
+        }
       >
         {children}
       </div>

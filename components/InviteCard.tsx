@@ -3,7 +3,7 @@
 import { forwardRef, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useLocale } from "@/lib/locale-context";
-import { fetchLeaderboard } from "@/lib/leaderboard-client";
+import { fetchRank } from "@/lib/leaderboard-client";
 
 function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
@@ -40,35 +40,36 @@ function ClockIcon() {
 
 export const InviteCard = forwardRef<
   HTMLDivElement,
-  { name: string; elapsedMs: number; onRankSettled?: () => void; width?: string }
->(function InviteCard({ name, elapsedMs, onRankSettled, width = "min(84vw, 370px)" }, ref) {
+  {
+    name: string;
+    elapsedMs: number;
+    /** The guest's saved leaderboard entry: undefined while the score is
+     *  still being saved, null if there is none (or saving failed). */
+    entryId?: string | null;
+    onRankSettled?: () => void;
+    width?: string;
+  }
+>(function InviteCard({ name, elapsedMs, entryId, onRankSettled, width = "min(84vw, 370px)" }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
+    // Wait for the score to be saved before asking for its rank -- asking
+    // earlier showed no rank, or a stale one from a previous play.
     useEffect(() => {
+      if (entryId === undefined) return;
       let cancelled = false;
-      async function loadRank() {
-        let mine: string | null = null;
-        try {
-          mine = window.sessionStorage.getItem("tashabuk-last-entry");
-        } catch {
-          // ignore
-        }
-        if (!mine) {
-          onRankSettled?.();
-          return;
-        }
-        const entries = await fetchLeaderboard();
-        const index = entries.findIndex((e) => e.id === mine);
-        if (!cancelled && index >= 0) setRank(index + 1);
+      setRank(null);
+      (async () => {
+        const r = entryId ? await fetchRank(entryId) : null;
+        if (cancelled) return;
+        setRank(r);
         onRankSettled?.();
-      }
-      loadRank();
+      })();
       return () => {
         cancelled = true;
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [entryId]);
 
     return (
       <motion.div
@@ -106,8 +107,11 @@ export const InviteCard = forwardRef<
         </motion.div>
         <motion.div
           className="absolute pointer-events-none select-none z-20"
-          style={{ width: 94, left: -20, top: "62%" }}
-          animate={{ y: [0, 8, 0], rotate: [3, -2, 3] }}
+          // Anchored to the bottom (not a % of the height, which drifts as
+          // the card's text changes): it stands beside the event-details
+          // rows, in the space their left padding keeps free for it.
+          style={{ width: 86, left: -22, bottom: 16 }}
+          animate={{ y: [0, -6, 0], rotate: [3, -2, 3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -190,7 +194,9 @@ export const InviteCard = forwardRef<
             />
           </div>
 
-          <div className="flex flex-col gap-2">
+          {/* Physical left padding (in both languages) leaves room for the
+              muscle mascot, so it never covers an icon, label or value. */}
+          <div className="flex flex-col gap-2" style={{ paddingLeft: 46 }}>
             <div className="flex items-center gap-2 rounded-xl bg-[var(--color-cream-50)]/90 px-3.5 py-2 text-[12.5px] text-[var(--color-text)] font-body">
               <span className="text-[var(--color-secondary)]"><PinIcon /></span>
               <span className="font-semibold text-[var(--color-primary)]">{t.invite.locationLabel}</span>

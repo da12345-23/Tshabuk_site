@@ -11,7 +11,7 @@ export default function LeaderboardPage() {
   const { t } = useLocale();
 
   return (
-    <main className="relative flex-1 flex flex-col items-center justify-center py-10 px-4 overflow-hidden">
+    <main className="relative flex-1 flex flex-col items-center justify-center pt-20 pb-10 px-4 overflow-hidden">
       <FloatingPieces />
 
       <div className="fixed top-4 inset-x-0 flex justify-between items-center px-4 z-50">
