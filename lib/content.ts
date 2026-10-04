@@ -5,9 +5,8 @@ export const EVENT = {
   nameEn: "TASHABUK",
   datesAr: "٨ - ٩ أكتوبر ٢٠٢٦",
   datesEn: "October 8–9, 2026",
-  // Location is TBD — update once confirmed.
-  locationAr: "سيتم الإعلان عن الموقع قريبًا",
-  locationEn: "Location to be announced",
+  locationAr: "الأندلس مول",
+  locationEn: "Alandalus Mall",
 };
 
 export const dictionaries = {
