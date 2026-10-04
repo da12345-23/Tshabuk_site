@@ -3,8 +3,8 @@ export type Locale = "ar" | "en";
 export const EVENT = {
   nameAr: "تشابك",
   nameEn: "TASHABUK",
-  datesAr: "٨ - ٩ أكتوبر ٢٠٢٦",
-  datesEn: "October 8–9, 2026",
+  datesAr: "٩ أكتوبر ٢٠٢٦",
+  datesEn: "October 9, 2026",
   locationAr: "الأندلس مول",
   locationEn: "Alandalus Mall",
 };
