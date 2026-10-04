@@ -29,6 +29,15 @@ function CalendarIcon() {
   );
 }
 
+function ClockIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+
 export const InviteCard = forwardRef<
   HTMLDivElement,
   { name: string; elapsedMs: number; onRankSettled?: () => void; width?: string }
@@ -191,6 +200,11 @@ export const InviteCard = forwardRef<
               <span className="text-[var(--color-secondary)]"><CalendarIcon /></span>
               <span className="font-semibold text-[var(--color-primary)]">{t.invite.dateLabel}</span>
               <span className="truncate">{t.eventDates}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl bg-[var(--color-cream-50)]/90 px-3.5 py-2 text-[12.5px] text-[var(--color-text)] font-body">
+              <span className="text-[var(--color-secondary)]"><ClockIcon /></span>
+              <span className="font-semibold text-[var(--color-primary)]">{t.invite.timeLabel}</span>
+              <span className="truncate">{t.eventTime}</span>
             </div>
           </div>
         </div>

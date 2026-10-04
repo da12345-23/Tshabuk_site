@@ -5,6 +5,8 @@ export const EVENT = {
   nameEn: "TASHABUK",
   datesAr: "٩ أكتوبر ٢٠٢٦",
   datesEn: "October 9, 2026",
+  timeAr: "من ٥ مساءً إلى ١٠ مساءً",
+  timeEn: "5 PM to 10 PM",
   locationAr: "الأندلس مول",
   locationEn: "Alandalus Mall",
 };
@@ -17,6 +19,7 @@ export const dictionaries = {
     description:
       "تشابك حملة توعوية تهدف إلى التعريف بالاضطرابات العصبية العضلية عند الأطفال، ودعم العائلات من خلال المعرفة والتواصل والدعم المجتمعي.",
     eventDates: EVENT.datesAr,
+    eventTime: EVENT.timeAr,
     eventLocation: EVENT.locationAr,
     landing: {
       title: "مكانك بيننا… بس وين قطعتك؟ 🧩",
@@ -45,6 +48,7 @@ export const dictionaries = {
       ],
       closing: "جاهز تتشابك معنا؟",
       dateLabel: "التاريخ",
+      timeLabel: "الوقت",
       locationLabel: "المكان",
       viewLeaderboard: "لوحة المتصدرين",
       playAgain: "العب مرة أخرى",
@@ -100,6 +104,7 @@ export const dictionaries = {
     description:
       "Tashabuk is an awareness campaign shedding light on neuromuscular disorders in children — connecting families through knowledge, support, and community.",
     eventDates: EVENT.datesEn,
+    eventTime: EVENT.timeEn,
     eventLocation: EVENT.locationEn,
     landing: {
       title: "Your place is with us… but where's your piece? 🧩",
@@ -128,6 +133,7 @@ export const dictionaries = {
       ],
       closing: "Ready to connect with us?",
       dateLabel: "Date",
+      timeLabel: "Time",
       locationLabel: "Location",
       viewLeaderboard: "Leaderboard",
       playAgain: "Play again",
