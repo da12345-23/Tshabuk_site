@@ -16,6 +16,7 @@ import { useLocale } from "@/lib/locale-context";
 import { celebrate } from "@/lib/confetti";
 import { submitScore } from "@/lib/leaderboard-client";
 import { readInviteName } from "@/lib/invite-link";
+import { renderInvitePng } from "@/lib/export-image";
 
 type Stage = "landing" | "puzzle" | "reveal";
 
@@ -31,6 +32,8 @@ export default function Home() {
   // The guest's saved leaderboard entry, for their rank on the invite:
   // undefined while the score is still being saved, null if there's none.
   const [entryId, setEntryId] = useState<string | null | undefined>(undefined);
+  // The saved photo, made ahead of time (see below).
+  const [photo, setPhoto] = useState<{ dataUrl: string; file: File } | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
   // A personalized invite link can carry ?name=<guest name> to prefill the
@@ -73,14 +76,38 @@ export default function Home() {
     }
   }, []);
 
+  // Make the photo in the background as soon as the invite and the rank
+  // are ready, instead of on tap. Making it properly on iPhones takes a few
+  // seconds (see lib/export-image), and iPhones only open the Save/Share
+  // sheet right after a tap -- so the tap just hands over the finished
+  // photo. Remade if the language changes.
+  useEffect(() => {
+    setPhoto(null);
+    if (stage !== "reveal" || !frameReady || !rankReady) return;
+    let cancelled = false;
+    // Let the reveal animation and confetti finish first.
+    const timer = window.setTimeout(async () => {
+      const node = cardRef.current;
+      if (!node) return;
+      try {
+        const dataUrl = await renderInvitePng(node);
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], `tashabuk-invite-${name || "guest"}.png`, { type: "image/png" });
+        if (!cancelled) setPhoto({ dataUrl, file });
+      } catch {
+        // leave the button on "preparing"; a language switch retries
+      }
+    }, 1200);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [stage, frameReady, rankReady, locale, name, elapsedMs]);
+
   async function handleSaveImage() {
-    if (!cardRef.current || savingImage || !frameReady || !rankReady) return;
+    if (!photo || savingImage) return;
     setSavingImage(true);
     try {
-      const { toPng } = await import("html-to-image");
-      const dataUrl = await toPng(cardRef.current, { pixelRatio: 2, cacheBust: true });
-      const fileName = `tashabuk-invite-${name || "guest"}.png`;
-
       // A plain <a download> from a data: URL is silently a no-op on iOS
       // Safari (and unreliable on other mobile browsers) -- it just opens
       // or does nothing instead of saving a file. The Web Share API is the
@@ -88,20 +115,16 @@ export default function Home() {
       // save/share sheet, so prefer it whenever the browser can share
       // files at all; only fall back to the link-click trick where share
       // isn't available (desktop browsers mostly).
-      const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], fileName, { type: "image/png" });
-
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: fileName });
+      if (navigator.canShare?.({ files: [photo.file] })) {
+        await navigator.share({ files: [photo.file], title: photo.file.name });
       } else {
         const link = document.createElement("a");
-        link.download = fileName;
-        link.href = dataUrl;
+        link.download = photo.file.name;
+        link.href = photo.dataUrl;
         link.click();
       }
     } catch {
-      // ignore -- best-effort export (includes the user dismissing the
-      // native share sheet, which rejects with an AbortError)
+      // ignore -- includes the guest dismissing the share sheet
     } finally {
       setSavingImage(false);
     }
@@ -198,13 +221,9 @@ export default function Home() {
                 <Button
                   variant="secondary"
                   onClick={handleSaveImage}
-                  disabled={savingImage || !frameReady}
+                  disabled={savingImage || !photo}
                 >
-                  {savingImage
-                    ? t.invite.savingImage
-                    : frameReady
-                      ? t.invite.saveImage
-                      : t.invite.preparingImage}
+                  {savingImage ? t.invite.savingImage : photo ? t.invite.saveImage : t.invite.preparingImage}
                 </Button>
                 <Link href="/leaderboard">
                   <Button variant="ghost">{t.invite.viewLeaderboard}</Button>
