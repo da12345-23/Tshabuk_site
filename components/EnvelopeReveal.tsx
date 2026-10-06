@@ -351,22 +351,39 @@ function Spotlight({ from, variant }: { from: DOMRect | null; variant: InviteVar
   const innerRef = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState<{ w: number; h: number; scale: number } | null>(null);
 
+  const flown = useRef(false);
+
   // Phase 1: measure the card's natural size and work out the scale that
   // fits it on screen (with room for the paperclip/mascot overhangs).
+  // Keeps re-fitting while it's open: switching language (the English
+  // text runs longer), a late-loading font or resizing the window all
+  // change the size, and a one-time fit left the bottom cut off.
+  // offsetWidth/Height ignore the scale transform, so this can't loop.
   useLayoutEffect(() => {
-    const inner = innerRef.current;
-    if (!inner || fit) return;
-    const w = inner.offsetWidth;
-    const h = inner.offsetHeight;
-    // 56px top strip is kept clear for the fixed language button.
-    const scale = Math.min(1, (window.innerHeight - 72) / h, (window.innerWidth - 64) / w);
-    setFit({ w, h, scale });
-  }, [fit]);
+    const card = innerRef.current?.firstElementChild as HTMLElement | null;
+    if (!card) return;
+    const measure = () => {
+      const w = card.offsetWidth;
+      const h = card.offsetHeight;
+      // 56px top strip is kept clear for the fixed language button.
+      const scale = Math.min(1, (window.innerHeight - 72) / h, (window.innerWidth - 64) / w);
+      setFit((f) => (f && f.w === w && f.h === h && f.scale === scale ? f : { w, h, scale }));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(card);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
 
-  // Phase 2 (still before first paint): fly in from the envelope.
+  // Phase 2 (still before first paint): fly in from the envelope, once.
   useLayoutEffect(() => {
     const el = scope.current;
-    if (!el || !from || !fit) return;
+    if (!el || !from || !fit || flown.current) return;
+    flown.current = true;
     const to = el.getBoundingClientRect();
     const s0 = from.width / to.width;
     const dx = from.left - to.left;
