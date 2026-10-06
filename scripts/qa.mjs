@@ -26,6 +26,12 @@ for (const f of src) for (const m of readFileSync(f, "utf8").matchAll(/["'`](\/i
   if (!existsSync(join("public", m[1]))) missing.add(m[1]);
 missing.size ? bad(`missing image files: ${[...missing].join(", ")}`) : ok("every referenced /images/... file exists");
 
+// The saved photo is drawn on a <canvas> (lib/export-image.ts). html-to-image
+// (an SVG <foreignObject> snapshot) saved photos on iPhones without the
+// logo or pictures, zoomed and cropped -- don't let it creep back in.
+const snapshotLibs = src.filter((f) => /from\s+["'](html-to-image|dom-to-image|html2canvas)["']|import\(["'](html-to-image|dom-to-image|html2canvas)["']\)/.test(readFileSync(f, "utf8")));
+snapshotLibs.length ? bad(`saved photo must be drawn on canvas, not a DOM snapshot library: ${snapshotLibs.join(", ")}`) : ok("saved photo is drawn on canvas (iPhone-safe)");
+
 console.log(`Live site (${base})`);
 for (const path of ["/", "/leaderboard", "/make-invite"]) {
   try { const r = await fetch(base + path); r.ok ? ok(`${path} -> ${r.status}`) : bad(`${path} -> ${r.status}`); }

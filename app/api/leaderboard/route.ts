@@ -72,7 +72,8 @@ async function rankOf(id: string) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
-  const name = typeof body?.name === "string" ? body.name.trim().slice(0, 60) : "";
+  // Cut by whole characters, never through the middle of an emoji.
+  const name = typeof body?.name === "string" ? Array.from(body.name.trim() as string).slice(0, 60).join("") : "";
   const timeMs = typeof body?.timeMs === "number" ? Math.round(body.timeMs) : NaN;
   const locale = body?.locale === "en" ? "en" : "ar";
 

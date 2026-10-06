@@ -48,8 +48,11 @@ export const InviteCard = forwardRef<
     entryId?: string | null;
     onRankSettled?: () => void;
     width?: string;
+    /** Play the pop-in entrance (off for the hidden copy the photo is
+     *  drawn from, so a photo can never catch it half-faded). */
+    animateIn?: boolean;
   }
->(function InviteCard({ name, elapsedMs, entryId, onRankSettled, width = "min(84vw, 370px)" }, ref) {
+>(function InviteCard({ name, elapsedMs, entryId, onRankSettled, width = "min(84vw, 370px)", animateIn = true }, ref) {
     const { t } = useLocale();
     const [rank, setRank] = useState<number | null>(null);
 
@@ -74,7 +77,7 @@ export const InviteCard = forwardRef<
     return (
       <motion.div
         ref={ref}
-        initial={{ opacity: 0, scale: 0.85, y: 24 }}
+        initial={animateIn ? { opacity: 0, scale: 0.85, y: 24 } : false}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="relative mx-auto"
@@ -96,7 +99,7 @@ export const InviteCard = forwardRef<
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- plain
               img is required: next/image renders unreliably (sometimes the
-              wrong source entirely) inside the off-screen html-to-image
+              wrong source entirely) inside the off-screen photo
               export target. */}
           <img
             src="/images/brand/mascot-nerve-t.png"

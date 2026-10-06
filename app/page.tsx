@@ -33,7 +33,10 @@ export default function Home() {
   // undefined while the score is still being saved, null if there's none.
   const [entryId, setEntryId] = useState<string | null | undefined>(undefined);
   // The saved photo, made ahead of time (see below).
-  const [photo, setPhoto] = useState<{ dataUrl: string; file: File } | null>(null);
+  const [madePhoto, setPhoto] = useState<{ dataUrl: string; file: File; locale: string } | null>(null);
+  // Only offer a photo made in the language on screen -- never hand over
+  // the previous language's in the moment after switching.
+  const photo = madePhoto?.locale === locale ? madePhoto : null;
   const cardRef = useRef<HTMLDivElement>(null);
 
   // A personalized invite link can carry ?name=<guest name> to prefill the
@@ -93,7 +96,7 @@ export default function Home() {
         const dataUrl = await renderInvitePng(node);
         const blob = await (await fetch(dataUrl)).blob();
         const file = new File([blob], `tashabuk-invite-${name || "guest"}.png`, { type: "image/png" });
-        if (!cancelled) setPhoto({ dataUrl, file });
+        if (!cancelled) setPhoto({ dataUrl, file, locale });
       } catch {
         // leave the button on "preparing"; a language switch retries
       }
@@ -266,6 +269,7 @@ export default function Home() {
                     elapsedMs={elapsedMs}
                     entryId={entryId}
                     width="470px"
+                    animateIn={false}
                     onRankSettled={() => setRankReady(true)}
                   />
                 </InviteFrame>

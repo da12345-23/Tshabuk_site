@@ -5,7 +5,7 @@ import { forwardRef, useEffect, useRef } from "react";
 const PADDING = 140;
 
 // Literal hex values, not CSS custom properties -- proven unreliable to
-// resolve inside the html-to-image export target in the past.
+// resolve inside the old export snapshot in the past.
 const BG = "linear-gradient(160deg, #fdf8ef 0%, #f7ecd9 45%, #eeddb8 100%)";
 
 // Soft organic color washes behind the piece confetti, echoing the
