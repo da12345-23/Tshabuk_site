@@ -70,7 +70,9 @@ export const dictionaries = {
       ],
       closing: "وجودكم يكمل الصورة 🧩",
       eventDate: "٩ أكتوبر ٢٠٢٦",
-      eventLocation: "سيتم الإعلان عنه قريبًا",
+      eventTime: "٥ – ١٠ مساءً",
+      eventLocation: "الأندلس مول",
+      opening: "الافتتاح الساعة ٦:٤٥ مساءً",
     },
     // The parents' invitation at /envelope2 -- same card, its own text.
     parentsInvite: {
@@ -155,7 +157,9 @@ export const dictionaries = {
       ],
       closing: "Your presence completes the picture 🧩",
       eventDate: "October 9, 2026",
-      eventLocation: "To be announced soon",
+      eventTime: "5 – 10 PM",
+      eventLocation: "Alandalus Mall",
+      opening: "Opening at 6:45 PM",
     },
     parentsInvite: {
       title: "To every mother and father…",

@@ -20,6 +20,15 @@ function CalendarIcon() {
   );
 }
 
+function ClockIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+
 function PaperclipIcon() {
   return (
     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--color-sage-600)" strokeWidth="2" strokeLinecap="round">
@@ -67,6 +76,9 @@ export function GeneralInviteCard({
 }) {
   const { t } = useLocale();
   const g = variant === "parents" ? t.parentsInvite : t.generalInvite;
+  // Only /envelope's text has the hours and the opening time.
+  const eventTime: string | null = variant === "general" ? t.generalInvite.eventTime : null;
+  const opening: string | null = variant === "general" ? t.generalInvite.opening : null;
 
   return (
     <div className="relative mx-auto" style={{ width: "min(84vw, 370px)" }}>
@@ -161,9 +173,11 @@ export function GeneralInviteCard({
         <span className="flex-1 h-px" style={{ background: "color-mix(in srgb, var(--color-wood-500) 45%, transparent)" }} />
       </div>
 
-      {/* Date, then location, as two colored boxes. The right side is left
-          free for the muscle mascot standing beside them. */}
-      <div className="relative z-10 flex gap-2.5 mt-4" style={{ paddingRight: 86 }}>
+      {/* Date (with the hours), then location, as two colored boxes, and the
+          opening time under them. The right side is left free for the
+          muscle mascot standing beside them. */}
+      <div className="relative z-10 flex flex-col gap-3 mt-4" style={{ paddingRight: 86 }}>
+      <div className="flex gap-2.5">
         <div
           className="flex-1 flex flex-col items-center gap-1 rounded-3xl px-3 py-3 text-[13.5px] font-body"
           style={{
@@ -174,6 +188,9 @@ export function GeneralInviteCard({
           <span className="text-[var(--color-secondary)]"><CalendarIcon /></span>
           <span className="font-semibold text-[var(--color-text)]">{t.invite.dateLabel}</span>
           <span className="text-[var(--color-text-muted)] text-center leading-snug">{g.eventDate}</span>
+          {eventTime && (
+            <span className="text-[var(--color-text-muted)] text-center leading-snug whitespace-nowrap">{eventTime}</span>
+          )}
         </div>
         <div
           className="flex-1 flex flex-col items-center gap-1 rounded-3xl px-3 py-3 text-[13.5px] font-body"
@@ -186,6 +203,19 @@ export function GeneralInviteCard({
           <span className="font-semibold text-[var(--color-text)]">{t.invite.locationLabel}</span>
           <span className="text-[var(--color-text-muted)] text-center leading-snug whitespace-pre-line">{g.eventLocation}</span>
         </div>
+      </div>
+      {opening && (
+        <div
+          className="flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-[13.5px] font-body font-semibold text-[var(--color-text)]"
+          style={{
+            background: "color-mix(in srgb, var(--color-mustard-400) 30%, var(--color-cream-50))",
+            boxShadow: "0 0 22px 3px rgba(243,194,67,.45)",
+          }}
+        >
+          <span className="text-[var(--color-wood-700)]"><ClockIcon /></span>
+          {opening}
+        </div>
+      )}
       </div>
 
       {/* Muscle at the bottom, beside the boxes */}
