@@ -18,6 +18,24 @@ import { submitScore } from "@/lib/leaderboard-client";
 
 type Stage = "landing" | "puzzle" | "reveal";
 
+// The ?name= value as the guest should see it. Messaging apps sometimes
+// encode a shared link a second time, which left Arabic names showing up
+// as "%D8%B1%D8%A9..." in the name field -- so undo any leftover encoding
+// (a couple of layers at most), then drop invisible direction marks.
+function readName(raw: string) {
+  let name = raw;
+  for (let i = 0; i < 3 && /%[0-9a-f]{2}/i.test(name); i++) {
+    try {
+      const decoded = decodeURIComponent(name);
+      if (decoded === name) break;
+      name = decoded;
+    } catch {
+      break;
+    }
+  }
+  return name.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").replace(/\s+/g, " ").trim();
+}
+
 export default function Home() {
   const { t, locale } = useLocale();
   const [stage, setStage] = useState<Stage>("landing");
@@ -40,7 +58,7 @@ export default function Home() {
   // session data from a previous, unrelated play-through.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const presetName = params.get("name");
+    const presetName = readName(params.get("name") ?? "");
     if (presetName) {
       setPrefilledName(presetName);
       return;
