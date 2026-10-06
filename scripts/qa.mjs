@@ -16,6 +16,7 @@ const run = (label, cmd) => {
 console.log("Code checks");
 run("TypeScript compiles", "npx tsc --noEmit");
 run("Puzzle pieces fit exactly", "npx tsx scripts/check-puzzle-fit.ts");
+run("Invite links keep names readable and intact", "npx tsx scripts/check-invite-links.ts");
 
 console.log("Assets");
 const walk = (d) => readdirSync(d).flatMap((f) => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });

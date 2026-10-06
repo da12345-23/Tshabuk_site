@@ -2,20 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/Button";
-
-// Builds the name part of the link so it stays readable -- Arabic letters
-// are kept as they are (tshabuk.site/?name=سارة) instead of the browser's
-// %D8%B3... codes. Only characters that would break the link are escaped,
-// and spaces become "+" (read back as spaces). Invisible direction marks
-// that phone keyboards sometimes add are dropped.
-function readableName(value: string) {
-  return value
-    .replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "")
-    .trim()
-    .replace(/\s+/g, " ")
-    .replace(/[%&#+?=/\\]/g, (c) => encodeURIComponent(c))
-    .replace(/ /g, "+");
-}
+import { buildInviteLink } from "@/lib/invite-link";
 
 export default function MakeInvitePage() {
   const [name, setName] = useState("");
@@ -29,8 +16,7 @@ export default function MakeInvitePage() {
     setOrigin(window.location.origin);
   }, []);
 
-  const guest = readableName(name);
-  const link = origin ? `${origin}/${guest ? `?name=${guest}` : ""}` : "";
+  const link = origin ? buildInviteLink(origin, name) : "";
 
   async function handleCopy() {
     if (!link) return;
